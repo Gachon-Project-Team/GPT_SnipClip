@@ -2,20 +2,11 @@ import json
 import urllib.request
 from newspaper import Article
 import requests
-
-#API설정 
-def get_naver_key():
-  client_id="oIPVUEZLM7U1n_IoWVv6"
-  client_secret="a5lh4ogQIl"
-  return client_id, client_secret
-
-def get_gpt_key():
-  api_key= "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"
-  return api_key
+import api
 
 #뉴스 스크랩
 def news_scrap(query):
-  client_id, client_secret = get_naver_key()
+  client_id, client_secret = api.get_naver_key()
   encText = urllib.parse.quote(query) 
   url = f"https://openapi.naver.com/v1/search/news?query={encText}&display=100"
   data = [] #기사를 저장할 리스트, 딕셔너리 리스트 형태, key = id, title, content, image, url
@@ -64,7 +55,7 @@ def news_scrap(query):
 
 #GPT 사용 뉴스 분류 작업 요청 준비 
 def setup_gpt_request(data, query):
-  key=get_gpt_key()
+  key=api.get_gpt_key()
   url="https://api.openai.com/v1/chat/completions"
   keys = ["id", "title"]
   filtered_data = [{key: item[key] for key in keys} for item in data]
@@ -135,9 +126,9 @@ def news_scraper(query):
   result = execute_gpt(data, url, header, request)
   
   #result 콘솔에 프린트하면 짤려서 그냥 임시로 ... 해놓은거임... 지워도됨 
-  # with open("result.json", "w", encoding="utf-8") as f:
-  #   json.dump(result, f, ensure_ascii=False, indent=4)
-  # print("Result saved to result.json")
+  with open("result.json", "w", encoding="utf-8") as f:
+    json.dump(result, f, ensure_ascii=False, indent=4)
+  print("Result saved to result.json")
   
   return result
 
