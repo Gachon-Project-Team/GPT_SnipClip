@@ -1,9 +1,8 @@
 import json
 from openai import OpenAI
 from IPython.display import Image, display
-import api
+import api_key
 import requests
-
 
 # 각 카테고리 별 내용 요약 실행 
 def generate_script(news, query):
@@ -14,8 +13,6 @@ def generate_script(news, query):
         if gpt_result:
             result.append(gpt_result)
         else: #gpt_result가 none 인 경우
-            #아티클 하나 줄여서 보내거나 보내는 기사 수 제한 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            #esult.append(gpt_result)
             continue
         
     return result
@@ -30,17 +27,17 @@ def execute_gpt(url, header, request):
             # JSON 파싱
             categories = json.loads(raw_content)
         except json.JSONDecodeError as e:
-            print("Failed to parse JSON:", raw_content, e)
+            print("* gen_script/execute_gpt * Failed to parse JSON:", raw_content, e)
             categories = None
     else:
-        print(f"response Error: {response.status_code}")
+        print(f"* gen_script/execute_gpt * response Error: {response.status_code}")
         categories = None
         
     return categories
     
 # GPT 사용 뉴스 요약
 def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecory하나에대한 기사들 모음
-    key=api.get_gpt_key()
+    key=api_key.get_gpt_key()
     url="https://api.openai.com/v1/chat/completions"
     
     header = {
@@ -49,6 +46,7 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
     }
 
     request = {
+    # "model": "gpt-4o-mini",
     "model": "gpt-3.5-turbo",
     "messages": [
         {
@@ -75,54 +73,9 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
         ]
     } 
 
-
     return url, header, request
 
-#데이터에서 이미지, 링크만 추출 
-def extracted_img(news):
-    result = []
-    for category, articles in news.items():
-        category_data = {
-            category: [
-                {"url": article["url"], "image": article["image"]}
-                for article in articles
-            ]
-        }
-        result.append(category_data)
-    
-    return result
-
 # 메인 함수
-# 대본/이미지 매칭 파일 생성 함수 
-def generate_script_img(news, query, ai):
-    #이미지, 출처 매칭 딕셔너리, 딕셔너리 리스트 형태고 딕셔너리 안엔 category: [{"url"="", "image"=""}] 형태 
-    image = extracted_img(news)
-    print(image)
-    
+def generate_script(news, query):
     #카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "content"=""}] 형태
-    script = generate_script(news, query) 
-    #test code
-    # with open("scrip.json", "w", encoding="utf-8") as file:
-    #     json.dump(script, file, ensure_ascii=False, indent=4)
-    # print(f"Script saved")
-    
-    #생성된 대본에 맞춘 이미지
-    # 이부분 추가 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-    # switch(ai) {
-    #     #ai 이미지 사용x
-    #     case 0: { 
-    #         break;
-    #         }
-    #     #ai 이미지 사용o
-    #     case 1: {
-    #         break;
-    #     }
-    #}
-    
-    #return result
-
-
-#test code
-with open("result.json", "r", encoding="utf-8") as file:
-    news = json.load(file) 
-generate_script_img(news, "가천대학교", 3)
+    return generate_script(news, query) 
