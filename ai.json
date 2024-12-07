@@ -2,78 +2,70 @@
     {
         "category": "category_1",
         "title": "가천대학교 2024학년도 입학전형 주요 변경 사항",
-        "content": "가천대학교가 2024학년도 신입생 모집을 위한 '가천인의 발' 행사 준비에 박차를 가하고 있습니다. 이번 행사는 12월 5일부터 6일까지 진행되며, 고등학교 학생들을 위한 다양한 체험 프로그램이 예정되어 있습니다. 변경된 사항 중 하나는 입학전형에서의 학교생활기록부 반영 비율입니다. 이전 연도와 달리, 2024학년도에는 200명 이상의 학생이 지원할 것으로 예상됩니다. 또한, 수시 모집에서의 서류 평가도 강화되어 좀 더 공정한 선발이 이루어질 예정입니다. 가천대학교 측은 '학생들이 학교 생활의 중요성을 깨닫고 이를 바탕으로 자신의 진로를 고민할 수 있는 기회를 제공할 것'이라고 전했습니다. 추가적으로, 대입전형 성적 산정에서 과목별 가중치 반영이 확대되고 있어, 지원자들은 이에 대한 대비가 필요합니다. 입학팀은 지원자에게 공정한 기회를 제공하기 위해 지속적으로 시스템을 개선하고 있으며, 앞으로 더 많은 학생들이 가천대학교에 지원하기를 기대하고 있습니다.",
-        "image": [
-            [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-7QWLmHnbKuyOs1Aihavsim8E.png?st=2024-12-06T12%3A38%3A34Z&se=2024-12-06T14%3A38%3A34Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A08%3A00Z&ske=2024-12-07T00%3A08%3A00Z&sks=b&skv=2024-08-04&sig=mV7wxoE7aCPIes1Nr/HNm5pGgF2YIFGtqR8ovEuM9Gg%3D"
-            ],
-            [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-Y3K7u7n2Wh8TiviN7EsnWvug.png?st=2024-12-06T12%3A38%3A48Z&se=2024-12-06T14%3A38%3A48Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T09%3A54%3A47Z&ske=2024-12-07T09%3A54%3A47Z&sks=b&skv=2024-08-04&sig=cfBzIOU9dx6AOuek5nF/V%2BnHiMd03o9%2BIrCZHSdLWNI%3D"
-            ]
-        ]
+        "section": null,
+        "image": null
     },
     {
         "category": "category_2",
         "title": "가천대학교의 새 발전 소식",
-        "content": "가천대학교는 최근 8개 전공의 새로운 교육 과정을 개편하며, 학생들에게 보다 향상된 학습 환경을 제공하기 위해 노력하고 있습니다. 특히, 이 대학은 2024학년도 신입생을 위해 5일 동안의 기초 교육 프로그램을 실시함으로써, 학생들이 학업에 적응할 수 있도록 지원하고 있습니다. 이와 함께, 한국의 주요 학문적 요구를 반영하여 인공지능 및 데이터 과학과 같은 최신 트렌드를 지속적으로 반영한 과정을 선보이고 있습니다.\n\n가천대학교는 교육과정 개선뿐만 아니라, 교내 시스템의 디지털 전환을 통해 학생들의 학습 경험을 향상시키려고 하고 있습니다. 이에 따라, 행정 서비스 및 학습 자료의 디지털화가 활발히 진행되고 있습니다.\n\n또한, 가천대학교는 글로벌 진출을 위해 해외 파트너십을 확대하는 전략을 구사하고 있으며, 이를 통해 다양한 국제적 프로그램을 학생들에게 제공할 예정입니다. 이러한 모든 변화는 가천대학교의 미래 비전을 달성하는 데 큰 기여를 할 것으로 기대됩니다.",
+        "section": [
+            "가천대학교는 최근 8개 전공의 새로운 교육 과정을 개편하며, 학생들에게 보다 향상된 학습 환경을 제공하기 위해 노력하고 있습니다. 특히, 이 대학은 2024학년도 신입생을 위해 5일 동안의 기초 교육 프로그램을 실시함으로써, 학생들이 학업에 적응할 수 있도록 지원하고 있습니다. 이와 함께, 한국의 주요 학문적 요구를 반영하여 인공지능 및 데이터 과학과 같은 최신 트렌드를 지속적으로 반영한 과정을 선보이고 있습니다.",
+            "가천대학교는 교육과정 개선뿐만 아니라, 교내 시스템의 디지털 전환을 통해 학생들의 학습 경험을 향상시키려고 하고 있습니다. 이에 따라, 행정 서비스 및 학습 자료의 디지털화가 활발히 진행되고 있습니다. 또한, 가천대학교는 글로벌 진출을 위해 해외 파트너십을 확대하는 전략을 구사하고 있으며, 이를 통해 다양한 국제적 프로그램을 학생들에게 제공할 예정입니다. 이러한 모든 변화는 가천대학교의 미래 비전을 달성하는 데 큰 기여를 할 것으로 기대됩니다."
+        ],
         "image": [
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-TtVB7MgwL4VqzTJKk7G7FWNp.png?st=2024-12-06T12%3A39%3A00Z&se=2024-12-06T14%3A39%3A00Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A40%3A17Z&ske=2024-12-07T00%3A40%3A17Z&sks=b&skv=2024-08-04&sig=po9aDHITng2xSJEgmaPNz8WrYQdGqmCsW7iHp7CFJwQ%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-Zm5jcxMJGsodV2h2gxzS6UlP.png?st=2024-12-07T10%3A21%3A07Z&se=2024-12-07T12%3A21%3A07Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T23%3A03%3A32Z&ske=2024-12-07T23%3A03%3A32Z&sks=b&skv=2024-08-04&sig=FKbdcXTV0GUGl5nidZ/FgCHf7txRgaW7BHXnC7QnM3E%3D"
             ],
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-wG6KkmlE3QozCCIn68oX3E5z.png?st=2024-12-06T12%3A39%3A11Z&se=2024-12-06T14%3A39%3A11Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A47%3A46Z&ske=2024-12-07T00%3A47%3A46Z&sks=b&skv=2024-08-04&sig=7QnXiEgfck1frmMYONshYPFV9t3DLMUFo9GAmLhniis%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-xnXQvnXOnEmPl6YyLQVv1nRj.png?st=2024-12-07T10%3A21%3A19Z&se=2024-12-07T12%3A21%3A19Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A57%3A43Z&ske=2024-12-07T22%3A57%3A43Z&sks=b&skv=2024-08-04&sig=4eQJYptTJ1seCKslVT68rVZoL5Po6ornwPgWMrgZQKU%3D"
             ]
         ]
     },
     {
         "category": "category_3",
         "title": "가천대학교 2024년 입학 전략 발표",
-        "content": "가천대학교는 2024학년도 입학 전형을 발표하며, 대입에서의 변화에 대응하기 위한 지역 대학의 전략을 강조했습니다. 이 대학은 2025학년도까지 수시와 정시에 걸쳐 다양한 전형을 통해 학생들을 모집할 계획입니다. 총 6개 단과대학에서 80개 전공에 대해 지원할 수 있으며, 앞으로 더 많은 학생들이 가천대학교의 문을 두드릴 것으로 기대됩니다. 특히, 다중지능 이론을 바탕으로 한 수업과 최첨단 심리검사를 도입해 학생들의 잠재력을 최대한 개발할 방침입니다. 이러한 변화는 학생들의 다양한 능력을 평가하고 존중하는 방향으로 나아가고 있음을 시사합니다. 또한, 가천대학교는 고등학교 교육과정과 연계하여 학생들이 실제 대학교의 진학 과정을 체험해볼 기회를 제공하는 프로그램을 운영합니다. 이를 통해 수험생들에게 실질적인 정보를 제공하고, 대학교 진학에 대한 불안감을 해소하고자 합니다. 앞으로 가천대학교는 지역 사회와의 긴밀한 협력을 통해 더 나은 교육 환경을 조성할 계획입니다.",
+        "section": [
+            "가천대학교는 2024학년도 입학 전형을 발표하며, 대입에서의 변화에 대응하기 위한 지역 대학의 전략을 강조했습니다. 이 대학은 2025학년도까지 수시와 정시에 걸쳐 다양한 전형을 통해 학생들을 모집할 계획입니다. 총 6개 단과대학에서 80개 전공에 대해 지원할 수 있으며, 앞으로 더 많은 학생들이 가천대학교의 문을 두드릴 것으로 기대됩니다.",
+            "특히, 다중지능 이론을 바탕으로 한 수업과 최첨단 심리검사를 도입해 학생들의 잠재력을 최대한 개발할 방침입니다. 이러한 변화는 학생들의 다양한 능력을 평가하고 존중하는 방향으로 나아가고 있음을 시사합니다. 또한, 가천대학교는 고등학교 교육과정과 연계하여 학생들이 실제 대학교의 진학 과정을 체험해볼 기회를 제공하는 프로그램을 운영합니다. 이를 통해 수험생들에게 실질적인 정보를 제공하고, 대학교 진학에 대한 불안감을 해소하고자 합니다. 앞으로 가천대학교는 지역 사회와의 긴밀한 협력을 통해 더 나은 교육 환경을 조성할 계획입니다."
+        ],
         "image": [
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-OM3OU3GpkjwIkp7CThGU2erf.png?st=2024-12-06T12%3A39%3A23Z&se=2024-12-06T14%3A39%3A23Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A14%3A41Z&ske=2024-12-07T00%3A14%3A41Z&sks=b&skv=2024-08-04&sig=fKtTEbr4v%2BQR8SwXabzscgHQPW45AMy7MDb94uW/Od4%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-6avPONSaIzhvS0lzwE1oAICu.png?st=2024-12-07T10%3A21%3A31Z&se=2024-12-07T12%3A21%3A31Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A52%3A31Z&ske=2024-12-07T22%3A52%3A31Z&sks=b&skv=2024-08-04&sig=vfBZFlhNu3LEsVNeWa4lODz39sUCPzLuoKlOXG1nSRQ%3D"
             ],
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-n6wYfLZtmA0HUdeO2XIOpkFJ.png?st=2024-12-06T12%3A39%3A35Z&se=2024-12-06T14%3A39%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A22%3A15Z&ske=2024-12-07T00%3A22%3A15Z&sks=b&skv=2024-08-04&sig=DrivYJmBcQrOdiyAi9lEzfuqLHOob053JS%2B0ANQz5M0%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-7hHrlxlXcfgjfg5iTedqyWQP.png?st=2024-12-07T10%3A21%3A43Z&se=2024-12-07T12%3A21%3A43Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A54%3A04Z&ske=2024-12-07T22%3A54%3A04Z&sks=b&skv=2024-08-04&sig=6sWInHP9LlU5BjaLNR8f9qrYITAy%2B%2B/GKqB0RMhEwLo%3D"
             ]
         ]
     },
     {
         "category": "category_4",
         "title": "가천대학교의 최근 동향 및 성과",
-        "content": "가천대학교는 최근 4개 학과의 스타트업 지원을 통해 창업 생태계 조성에 기여하고 있습니다. 특히 인공지능 및 데이터 사이언스 관련 분야에서의 연구가 주목받고 있으며, 다양한 창의적 기업과 협력해 성과를 내고 있습니다. 이유진 교수의 연구팀은 소프트웨어와 관련된 커리큘럼을 운영하며 학생들의 창업 의식을 고취시키고 있습니다. 여기에 더해, 가천대학교는 백신 분야의 연구에서도 두각을 나타내고 있으며, 가운데 2021년 기초 연구의 중요성을 강조하며 석사 및 박사 과정에서의 연구를 지원하고 있습니다. 이외에도 캠퍼스 내 창업 공간을 마련해 학생들이 보다 쉽게 창업에 도전할 수 있는 환경을 조성했습니다. 특히, 학교 내 창업 지원 프로그램을 통하 여 학생들의 창업 아이디어를 현실화할 수 있도록 지원하고 있으니, 향후 가천대학교의 성과에 더욱 기대가 됩니다. 이처럼 가천대학교는 창의적 인재 양성을 위해 다양한 노력을 기울이고 있으며, 앞으로의 발전에도 귀추가 주목됩니다.",
+        "section": [
+            "가천대학교는 최근 4개 학과의 스타트업 지원을 통해 창업 생태계 조성에 기여하고 있습니다. 특히 인공지능 및 데이터 사이언스 관련 분야에서의 연구가 주목받고 있으며, 다양한 창의적 기업과 협력해 성과를 내고 있습니다.",
+            "이유진 교수의 연구팀은 소프트웨어와 관련된 커리큘럼을 운영하며 학생들의 창업 의식을 고취시키고 있습니다. 여기에 더해, 가천대학교는 백신 분야의 연구에서도 두각을 나타내고 있으며, 가운데 2021년 기초 연구의 중요성을 강조하며 석사 및 박사 과정에서의 연구를 지원하고 있습니다. 이외에도 캠퍼스 내 창업 공간을 마련해 학생들이 보다 쉽게 창업에 도전할 수 있는 환경을 조성했습니다."
+        ],
         "image": [
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-knCP6oprYFEyN063AMEp1T4T.png?st=2024-12-06T12%3A39%3A48Z&se=2024-12-06T14%3A39%3A48Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A13%3A53Z&ske=2024-12-07T00%3A13%3A53Z&sks=b&skv=2024-08-04&sig=T9dV0hBRLuOSnOfnJb02pzmRugTXlaue9NcJL1Z2/Lg%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-bqVWw42M05ADqDBimvWv0uJG.png?st=2024-12-07T10%3A21%3A53Z&se=2024-12-07T12%3A21%3A53Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A56%3A16Z&ske=2024-12-07T22%3A56%3A16Z&sks=b&skv=2024-08-04&sig=6dMuE%2BBhYeCfprXRb0vMYy%2B1pGxA0GFQKo2lytdS5kU%3D"
             ],
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-TWM1ASfSq5mQ2hcef4pnrVNG.png?st=2024-12-06T12%3A39%3A58Z&se=2024-12-06T14%3A39%3A58Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A12%3A57Z&ske=2024-12-07T00%3A12%3A57Z&sks=b&skv=2024-08-04&sig=uNPrCdu2IDsmm%2Bx1U%2BZy3ye8j43B/eplHsgpiECJpyo%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-POpOqtK8BgxZmsOZwJVN3ljS.png?st=2024-12-07T10%3A22%3A04Z&se=2024-12-07T12%3A22%3A04Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-07T02%3A55%3A51Z&ske=2024-12-08T02%3A55%3A51Z&sks=b&skv=2024-08-04&sig=gsV/P0nn9CJv6cdjmVLaPOxzhZYz6u5E079ZjjZ941M%3D"
             ]
         ]
     },
     {
         "category": "category_5",
         "title": "가천대학교, 스파트 학과 진학 시 공동 연구 확장",
-        "content": "가천대학교가 8개국의 스파르타크 학과와 공동 연구를 시작했습니다. 이번 공동 연구는 5일 동안 진행되며, 국립대학과의 협력으로 이루어집니다. 다양한 대학교의 교수와 학생들이 참여하여 여러 주제를 논의하고 연구 결과를 공유할 예정입니다. 주요 내용으로는 각국의 스파르타크 프로그램을 비교하고, 학생들의 역량을 강화하기 위한 방안을 모색하고 있습니다. 가천대학교는 이를 통해 국제적 연구 네트워크를 확장하고, 학생들에게 질 높은 연구 경험을 제공하고자 합니다. 또한, 학생들이 현실 세계의 다양한 문제를 해결하는 데 필요한 실질적인 지식을 습득할 수 있도록 지원하고 있습니다. 이번 프로그램은 학생들에게 기회를 제공할 뿐만 아니라, 각국의 교육 및 연구 환경을 심도 있게 이해할 수 있는 계기를 마련하고자 합니다. 가천대학교의 이러한 노력은 각국의 대학과의 협력 관계를 강화하고, 더 나은 교육 환경을 조성하는 데 큰 기여를 할 전망입니다.",
+        "section": [
+            "가천대학교가 8개국의 스파르타크 학과와 공동 연구를 시작했습니다. 이번 공동 연구는 5일 동안 진행되며, 국립대학과의 협력으로 이루어집니다. 다양한 대학교의 교수와 학생들이 참여하여 여러 주제를 논의하고 연구 결과를 공유할 예정입니다.",
+            "가천대학교는 이를 통해 국제적 연구 네트워크를 확장하고, 학생들에게 질 높은 연구 경험을 제공하고자 합니다. 또한, 학생들이 현실 세계의 다양한 문제를 해결하는 데 필요한 실질적인 지식을 습득할 수 있도록 지원하고 있습니다."
+        ],
         "image": [
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-X2kZBkZimmg74xZJJzjJQGbh.png?st=2024-12-06T12%3A40%3A10Z&se=2024-12-06T14%3A40%3A10Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A09%3A33Z&ske=2024-12-07T00%3A09%3A33Z&sks=b&skv=2024-08-04&sig=klt7%2BAyF1VB8KhFp79wrBFsJ7oEF/sVpSO4u70RkZHs%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-i3x7GDSoRPgEgj7A635ywx7z.png?st=2024-12-07T10%3A22%3A16Z&se=2024-12-07T12%3A22%3A16Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A51%3A03Z&ske=2024-12-07T22%3A51%3A03Z&sks=b&skv=2024-08-04&sig=NWT4O5I80HgtZudtUdxAsDIyPnZfOmZ4HgYo97U7uZc%3D"
             ],
             [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-q6on39FO72UA3LkUUP6oKIMb.png?st=2024-12-06T12%3A40%3A22Z&se=2024-12-06T14%3A40%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A08%3A41Z&ske=2024-12-07T00%3A08%3A41Z&sks=b&skv=2024-08-04&sig=jZEqjDScN%2BYmTykiSfzHAiC/hK8U/DibgRsWGWfy/eM%3D"
-            ]
-        ]
-    },
-    {
-        "category": "category_6",
-        "title": "가천대학교, 교육 제도의 혁신을 위한 노력",
-        "content": "가천대학교가 새로운 교육 제도를 위한 혁신적인 방안을 모색하고 있습니다. 오는 12월 6일, '인사소통법의 개정과 현재 미래'를 주제로 한 대형 세미나가 개최됩니다. 이번 세미나에서는 인사소통법의 역사와 미래 방향에 대한 논의가 이루어질 예정입니다.가천대는 이 세미나를 통해 인사소통법 교육의 중요성을 강조하며, 올바른 정보 전달과 소통의 중요성을 대중에게 전달하고자 합니다. 또한, 해외 사례를 분석하여 한국 교육의 발전 방향을 제시할 계획입니다.이번 세미나는 교직원, 학생, 전문인들이 참여할 수 있으며, 다양한 시각에서 교육 제도의 변화에 대한 논의가 이루어질 것으로 기대됩니다.가천대학교의 이번 노력은 지속적인 교육 혁신을 통해 인사소통 능력을 배양하고, 학생들의 전인적 성장을 도모하는 데 기여할 것입니다. 앞으로의 세미나가 해소해야 할 과제가 무엇인지 탐구하고, 교육 개선 방향을 설정해 나가기를 바랍니다.",
-        "image": [
-            [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-5kD5vqdeygZTlWZsixevzyTO.png?st=2024-12-06T12%3A40%3A35Z&se=2024-12-06T14%3A40%3A35Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A07%3A30Z&ske=2024-12-07T00%3A07%3A30Z&sks=b&skv=2024-08-04&sig=C9pSkk%2BVmgITBXz3Nv7fMQkoTei2ASDzS7eKFG8bkzE%3D"
-            ],
-            [
-                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-RDVP4OJTjqUWJec4CxKTyJt1.png?st=2024-12-06T12%3A40%3A46Z&se=2024-12-06T14%3A40%3A46Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T00%3A06%3A36Z&ske=2024-12-07T00%3A06%3A36Z&sks=b&skv=2024-08-04&sig=rh/atk8nhrFqPqXse32gnF%2BHqnovSLQOjxCVbiIF5k4%3D"
+                "https://oaidalleapiprodscus.blob.core.windows.net/private/org-BKH7l7vrVwsz8NOsFzPE9gio/user-f2ajhdd9DkAHBemawaFigikj/img-4IeiYgCaV1PgK0wk9HvT9XGl.png?st=2024-12-07T10%3A22%3A27Z&se=2024-12-07T12%3A22%3A27Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-06T22%3A51%3A35Z&ske=2024-12-07T22%3A51%3A35Z&sks=b&skv=2024-08-04&sig=EXUgvXzfHSCZ4V50AcSr7wYN6rhpIqLGbdS2DqDrhvc%3D"
             ]
         ]
     }

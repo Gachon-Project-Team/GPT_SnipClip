@@ -18,6 +18,7 @@ def extracted_img(news):
 def merge_script_image(script, image):
     # 1. 이미지 데이터를 category 기준으로 매핑
     image_mapping = {item["category"]: item["image"] for item in image}
+    section_mapping = {item["category"]: item["section"] for item in image}
 
     # 2. 스크립트 데이터를 순회하며 병합
     result = []
@@ -25,9 +26,9 @@ def merge_script_image(script, image):
         merged_item = {
             "category": item["category"],
             "title": item["title"],
-            "content": item["content"],
+            "section": section_mapping.get(item["category"], None),
             "image": image_mapping.get(item["category"], None) 
-        }
+            }
         result.append(merged_item)
 
     return result
@@ -35,7 +36,6 @@ def merge_script_image(script, image):
 #ai 사용시 이미지 생성 호출
 def gen_ai(script):
     prompt = generate_prompt(script)
-    print(prompt)
     image = execute_dalle(prompt)
     with open('prompt.json', 'w', encoding='utf-8') as file:
         json.dump(prompt, file, ensure_ascii=False, indent=4)
@@ -94,29 +94,34 @@ def setup_prompt_gpt_request(category, script):
     }
 
     request = {
-        "model": "gpt-4o-mini",
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You are a content assistant specializing in analyzing scripts for short-form video creation. "
-                    "Your task is to divide the script into logical sections and create detailed prompts for image generation using DALL·E. "
-                    "Ensure each prompt vividly describes the visual elements that align with the section's context and flow."
-                )
-            },
-            {
-                "role": "user",
-                "content": (
-                    # "The script provided below needs to be divided into at least 5 sections, each representing a key part of the narrative. "
-                    "The script provided below needs to be divided into at 2 sections, each representing a key part of the narrative. must be 2 section!!!!"
-                    "For each section, generate a prompt suitable for DALL·E to create an image. The prompts should be descriptive, capturing the visual essence of the scene. "
-                    f"category must be same at {category}"
-                    f"Return the result in JSON format like this: {{\"category\": \"{category}\", \"section\": [\"prompt for section 1\", \"prompt for section 2\", ...]}}. "
-                    f"Here is the script: {script}"
-                )
-            }
-        ]
-    }
+    "model": "gpt-4o-mini",
+    "messages": [
+        {
+            "role": "system",
+            "content": (
+                "You are a content assistant specializing in analyzing scripts for short-form video creation. "
+                "Your task is to divide the script into logical sections and create detailed prompts for image generation using DALL·E. "
+                "Each result must include the following components: "
+                "- The category of the script "
+                "- The script divided into sections "
+                "- A descriptive image prompt for each section, suitable for DALL·E generation. "
+                "Ensure that the prompts are vivid, detailed, and contextually aligned with the narrative. "
+                "Additionally, include any other related queries or requirements from the user."
+            )
+        },
+        {
+            "role": "user",
+            "content": (
+                "Divide the following script into exactly 2 sections. For each section, create a descriptive prompt suitable for DALL·E image generation. "
+                "Include the category, the script divided into sections, prompts for each section, and any other specified details. "
+                "Return the result in the following format: "
+                "{\"category\": \"category_name\", \"section\": [\"section 1 text\", \"section 2 text\"], \"prompt\": [\"prompt for section 1\", \"prompt for section 2\"]}. "
+                f"Category: {category}. Script: {script}. Include any additional user requirements if applicable."
+            )
+        }
+    ]
+}
+
 
     return url, header, request
 
@@ -126,8 +131,10 @@ def execute_dalle(prompt):
     for p in prompt:
         category=p["category"]
         section=p["section"]
+        prompt=p["prompt"]
+        
         img_url=[]
-        for s in section:
+        for s in prompt:
             innerList=[]
             url, header, data = set_up_dalle(s)
             response = requests.post(url, headers=header, json=data)
@@ -139,6 +146,7 @@ def execute_dalle(prompt):
                 print(f"* execute_dalle * Error: {response.status_code}, {response.text}")
         dict = {
             "category":category,
+            "section": section,
             "image": img_url
         }
         result.append(dict)
