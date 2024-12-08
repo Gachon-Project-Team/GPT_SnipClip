@@ -85,7 +85,7 @@ def setup_gpt_request(data, query):
                   "Return the result in strict JSON format, following this structure: {\"category_num (ex:category_1)\": [news_id, ...]} "
                   "Do not include any articles that are only tangentially related to the query or contain overly generalized or unrelated content. "
                   "Ensure that the classification is fine-grained and avoids overly broad categories. "
-                  "Limit the classification to exactly 3 categories."
+                  # test code "Limit the classification to exactly 3 categories."
                   "Do not include any extra text, Strictly return JSON"
                   f"Here is the data: {filtered_data_json}"
               )
