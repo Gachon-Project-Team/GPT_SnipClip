@@ -42,12 +42,12 @@ def add_watermark_to_video(input_video_path, output_video_path, watermark_image_
     # 워터마크 이미지를 그레이스케일로 읽어온 후 64X64 크기로 조정
     watermark = cv2.imread(watermark_image_path, cv2.IMREAD_GRAYSCALE)
     if watermark is None:
-        raise FileNotFoundError(f"Watermark image '{watermark_image_path}' Not found. Check the file path.")
+        raise FileNotFoundError(f"Watermark image '{watermark_image_path}' not found. Check the file path.")
     watermark = cv2.resize(watermark, (64, 64))
 
     cap = cv2.VideoCapture(input_video_path)
     if not cap.isOpened():
-        raise FileNotFoundError(f"Input video '{input_video_path}' Not found. Check the file path.")
+        raise FileNotFoundError(f"Input video '{input_video_path}' not found. Check the file path.")
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -72,11 +72,15 @@ def add_watermark_to_video(input_video_path, output_video_path, watermark_image_
     cap.release()
     out.release()
 
-if __name__ == "__main__":
-    input_folder = "input_videos"
-    output_folder = "output_videos"
-    watermark_image_path = "watermark.png"
 
+if __name__ == "__main__":
+    # 현재 파일 경로를 기준으로 상대 경로 설정
+    base_dir = os.path.dirname(os.path.abspath(__file__))  # 현재 스크립트 위치를 기준으로 경로 설정
+    input_folder = os.path.join(base_dir, "input_videos")
+    output_folder = os.path.join(base_dir, "output_videos")
+    watermark_image_path = os.path.join(base_dir, "watermark.png")
+
+    # 출력 폴더 생성
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 

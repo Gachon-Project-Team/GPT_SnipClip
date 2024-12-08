@@ -11,7 +11,7 @@ def extract_visible_watermark(frame_original, frame_watermarked):
     ycrcb_watermarked = cv2.cvtColor(frame_watermarked, cv2.COLOR_BGR2YCrCb)
     y_channel_watermarked, _, _ = cv2.split(ycrcb_watermarked)
 
-    # 밝기 성분(Y) 채널에 DWT 적용(원문과 워터마크 삽입된 비디오 각각 적용)
+    # 밝기 성분(Y) 채널에 DWT 적용(원본과 워터마크 삽입된 비디오 각각 적용)
     coeffs_original = pywt.dwt2(y_channel_original, 'haar')
     cA_original, (cH_original, cV_original, cD_original) = coeffs_original
 
@@ -32,9 +32,9 @@ def reveal_watermark_in_video(input_video_path, watermarked_video_path, output_f
     cap_watermarked = cv2.VideoCapture(watermarked_video_path)
 
     if not cap_original.isOpened():
-        raise FileNotFoundError(f"Input video '{input_video_path}' Not found. Check the file path.")
+        raise FileNotFoundError(f"Input video '{input_video_path}' not found. Check the file path.")
     if not cap_watermarked.isOpened():
-        raise FileNotFoundError(f"Watermarked video '{watermarked_video_path}' Not found. Check the file path.")
+        raise FileNotFoundError(f"Watermarked video '{watermarked_video_path}' not found. Check the file path.")
 
     frame_idx = 0
     while True:
@@ -48,7 +48,7 @@ def reveal_watermark_in_video(input_video_path, watermarked_video_path, output_f
         watermark_visible = extract_visible_watermark(frame_original, frame_watermarked)
 
         # 워터마크 이미지로 저장
-        output_path = f"{output_folder}/watermark_frame_{frame_idx}.png"
+        output_path = os.path.join(output_folder, f"watermark_frame_{frame_idx}.png")
         cv2.imwrite(output_path, watermark_visible)
         frame_idx += 1
 
@@ -57,14 +57,17 @@ def reveal_watermark_in_video(input_video_path, watermarked_video_path, output_f
     print(f"Watermark extraction completed. Extracted frames saved in '{output_folder}'")
 
 if __name__ == "__main__":
-    input_video_folder = "input_videos"
-    watermarked_video_folder = "output_videos"
-    extracted_folder = "extracted_watermarks"
+    # 현재 스크립트 위치를 기준으로 상대 경로 설정
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    input_video_folder = os.path.join(base_dir, "input_videos")
+    watermarked_video_folder = os.path.join(base_dir, "output_videos")
+    extracted_folder = os.path.join(base_dir, "extracted_watermarks")
 
+    # 폴더 존재 여부 확인 및 생성
     if not os.path.exists(input_video_folder):
-        raise FileNotFoundError(f"Input video folder '{input_video_folder}' Not found.")
+        raise FileNotFoundError(f"Input video folder '{input_video_folder}' not found.")
     if not os.path.exists(watermarked_video_folder):
-        raise FileNotFoundError(f"Watermarked video folder '{watermarked_video_folder}' Not found.")
+        raise FileNotFoundError(f"Watermarked video folder '{watermarked_video_folder}' not found.")
     if not os.path.exists(extracted_folder):
         os.makedirs(extracted_folder)
 
@@ -77,9 +80,9 @@ if __name__ == "__main__":
 
         input_video_path = os.path.join(input_video_folder, watermarked_video.replace("_watermarked.avi", ".mp4"))
         watermarked_video_path = os.path.join(watermarked_video_folder, watermarked_video)
-        
+
         if not os.path.exists(input_video_path):
-            print(f"Corresponding input video for '{watermarked_video}' Not found. Skipping...")
+            print(f"Corresponding input video for '{watermarked_video}' not found. Skipping...")
             continue
 
         output_folder = os.path.join(extracted_folder, f"{os.path.splitext(watermarked_video)[0]}")

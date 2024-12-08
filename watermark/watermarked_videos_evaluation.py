@@ -43,9 +43,9 @@ def check_watermarked_video(input_video_path, watermarked_video_path):
     cap_watermarked = cv2.VideoCapture(watermarked_video_path)
 
     if not cap_original.isOpened():
-        raise FileNotFoundError(f"Input video '{input_video_path}' Not found. Please check the file path.")
+        raise FileNotFoundError(f"Input video '{input_video_path}' not found. Please check the file path.")
     if not cap_watermarked.isOpened():
-        raise FileNotFoundError(f"Watermarked video '{watermarked_video_path}' Not found. Please check the file path.")
+        raise FileNotFoundError(f"Watermarked video '{watermarked_video_path}' not found. Please check the file path.")
 
     frame_count = 0
     success_count = 0
@@ -92,8 +92,10 @@ def check_watermarked_video(input_video_path, watermarked_video_path):
     print(f"Average SSIM: {avg_ssim:.4f}")
 
 if __name__ == "__main__":
-    input_folder = "input_videos"
-    watermarked_folder = "output_videos"
+    # 현재 파일 기준으로 경로 설정
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    input_folder = os.path.join(base_dir, "input_videos")
+    watermarked_folder = os.path.join(base_dir, "output_videos")
 
     try:
         for filename in os.listdir(input_folder):
@@ -102,6 +104,6 @@ if __name__ == "__main__":
                 input_video_path = os.path.join(input_folder, filename)
                 watermarked_video_path = os.path.join(watermarked_folder, f"{os.path.splitext(filename)[0]}_watermarked.avi")
                 check_watermarked_video(input_video_path, watermarked_video_path)
-                
+
     except FileNotFoundError as e:
         print(e)
