@@ -16,17 +16,16 @@ def extracted_img(news):
 
 #category 기반 이미지 매핑
 def merge_script_image(script, image):
-    # 1. 이미지 데이터를 category 기준으로 매핑
+    # 1. category="", image=[] 형식으로 변경
     image_mapping = {item["category"]: item["image"] for item in image}
-    section_mapping = {item["category"]: item["section"] for item in image}
-
+    
     # 2. 스크립트 데이터를 순회하며 병합
     result = []
     for item in script:
         merged_item = {
             "category": item["category"],
             "title": item["title"],
-            "section": section_mapping.get(item["category"], None),
+            "section": item["section"],
             "image": image_mapping.get(item["category"], None) 
             }
         result.append(merged_item)
@@ -37,8 +36,6 @@ def merge_script_image(script, image):
 def gen_ai(script):
     prompt = generate_prompt(script)
     image = execute_dalle(prompt)
-    with open('prompt.json', 'w', encoding='utf-8') as file:
-        json.dump(prompt, file, ensure_ascii=False, indent=4)
 
     return merge_script_image(script, image)
 
@@ -47,13 +44,15 @@ def generate_prompt(script):
     result = []
     for s in script:
         category=s["category"]
-        script=s["content"]
+        script=s["section"]
         url, header, request = setup_prompt_gpt_request(category, script)
         gpt_result = execute_gpt(url, header, request)
         
         result.append(gpt_result)
         
     return result
+
+
 
 #GPT 실행
 def execute_gpt(url, header, request):
@@ -100,11 +99,10 @@ def setup_prompt_gpt_request(category, script):
             "role": "system",
             "content": (
                 "You are a content assistant specializing in analyzing scripts for short-form video creation. "
-                "Your task is to divide the script into logical sections and create detailed prompts for image generation using DALL·E. "
+                "Your task is create detailed prompts for image generation using DALL·E. "
                 "Each result must include the following components: "
                 "- The category of the script "
-                "- The script divided into sections "
-                "- A descriptive image prompt for each section, suitable for DALL·E generation. "
+                "- A single descriptive image prompt for each section, suitable for DALL·E generation. "
                 "Ensure that the prompts are vivid, detailed, and contextually aligned with the narrative. "
                 "Additionally, include any other related queries or requirements from the user."
             )
@@ -112,16 +110,16 @@ def setup_prompt_gpt_request(category, script):
         {
             "role": "user",
             "content": (
-                "Divide the following script into exactly 2 sections. For each section, create a descriptive prompt suitable for DALL·E image generation. "
-                "Include the category, the script divided into sections, prompts for each section, and any other specified details. "
+                "Each section is separated by quotation marks."
+                "For each section, create a single descriptive image prompt suitable for DALL·E generation. "
+                f"category value must be same \"{category}\". don't edit!!!!!! "
                 "Return the result in the following format: "
-                "{\"category\": \"category_name\", \"section\": [\"section 1 text\", \"section 2 text\"], \"prompt\": [\"prompt for section 1\", \"prompt for section 2\"]}. "
-                f"Category: {category}. Script: {script}. Include any additional user requirements if applicable."
+                f"{{\"category\": {category}, \"prompt\": [\"prompt for section 1\", \"prompt for section 2\"...]}}"
+                f"here is script {script}"
             )
         }
     ]
 }
-
 
     return url, header, request
 
@@ -130,7 +128,6 @@ def execute_dalle(prompt):
     result=[]
     for p in prompt:
         category=p["category"]
-        section=p["section"]
         prompt=p["prompt"]
         
         img_url=[]
@@ -146,7 +143,6 @@ def execute_dalle(prompt):
                 print(f"* execute_dalle * Error: {response.status_code}, {response.text}")
         dict = {
             "category":category,
-            "section": section,
             "image": img_url
         }
         result.append(dict)
@@ -185,12 +181,12 @@ def generate_image(news, script, ai):
         return merge_script_image(script, image_url)
     
     
-#test code
-with open('scrap.json', 'r', encoding='utf-8') as file:
-        news = json.load(file)
-with open('scrip.json', 'r', encoding='utf-8') as file:
-        script = json.load(file)
+# #test code
+# with open('scrap.json', 'r', encoding='utf-8') as file:
+#         news = json.load(file)
+# with open('script.json', 'r', encoding='utf-8') as file:
+#         script = json.load(file)
 
-final = generate_image(news, script, 1)
-with open('ai.json', 'w', encoding='utf-8') as file:
-        json.dump(final, file, ensure_ascii=False, indent=4)
+# final = generate_image(news, script, 1)
+# with open('use_ai_image.json', 'w', encoding='utf-8') as file:
+#         json.dump(final, file, ensure_ascii=False, indent=4)

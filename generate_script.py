@@ -5,7 +5,7 @@ import api_key
 import requests
 
 # 각 카테고리 별 내용 요약 실행 
-def generate_script(news, query):
+def make_script(news, query):
     result=[]
     for category, articles in news.items():
         url, header, request = setup_gpt_request(category, json.dumps(articles), query)
@@ -46,15 +46,14 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
     }
 
     request = {
-    # "model": "gpt-4o-mini",
-    "model": "gpt-3.5-turbo",
+    "model": "gpt-4o-mini",
     "messages": [
         {
             "role": "system",
             "content": (
-                "Your job is to summarize news articles into a concise short-form script designed to be spoken within 1 minute and 30 seconds. "
+                "Your job is to summarize news articles into a concise short-form script designed to be spoken within 1 minute and 20 seconds. "
                 "The script should be approximately 180 to 225 words long and written in Korean. "
-                "Ensure the output is in the format: {\"category\": \"\", \"title\": \"\", \"content\": \"\"}. "
+                "Ensure the output is in the format: {\"category\": \"\", \"title\": \"\", \"section\": [] \"\"}. "
                 f"The value of category must be '{category}'."
             )
         },
@@ -63,10 +62,12 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
             "temperature": 1.4,
             "content": (
                 f"The following articles are related to the keyword '{query}'. "
-                f"Read all the news and summarize it into a one-and-a-half-minute presentation script. approximately 200 words, "
+                f"Read all the news and summarize it into a one-and-a-half-minute presentation script."
                 f"and generate an appropriate title in Korean. "
                 "Ensure the tone is consistent throughout, and use a unified style for sentence endings."
-                f"Return the response in this JSON format: {{\"category\": \"{category}\", \"title\": \"\", \"content\": \"\"}}.\n\n"
+                "The script should be natural and spoken, with no symbols or markers, even for section divisions."
+                "Please divide the generated script into 5 sections, formatted like [\"section1\", \"section2\"]. Then return it in the format specified below, in English."
+                f"Return the response in this JSON format: {{\"category\": \"{category}\", \"title\": \"\", \"section\": [] \"\"}}.\n\n"
                 f"{news}"
                 )
             }
@@ -78,4 +79,11 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
 # 메인 함수
 def generate_script(news, query):
     #카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "content"=""}] 형태
-    return generate_script(news, query) 
+    return make_script(news, query) 
+
+# #test code 
+# with open('scrap.json', 'r', encoding='utf-8') as file:
+#         news = json.load(file)
+# script = generate_script(news, "가천대학교")
+# with open('script.json', 'w', encoding='utf-8') as file:
+#         json.dump(script, file, ensure_ascii=False, indent=4)
