@@ -106,10 +106,10 @@ def setup_prompt_gpt_request(category, script):
 #title로 이미지 재검색
 def scrap_image(script):
     image=[]
-    inner_image=[]
     for item in script:
         query = item["title"] 
         news = generate_scrap.news_scrap(query)
+        inner_image=[]
         for n in news:
             inner_image.append([n["image"], n["url"]])
         inner_dict = {
@@ -139,9 +139,9 @@ def generate_image(script, ai):
     else: 
         return merge_script_image(script, pre_image)
 
-# #test code 
-# with open('script.json', 'r', encoding='utf-8') as file:
-#         script = json.load(file)
-# image = generate_prompt(script)
-# with open('prompt.json', 'w', encoding='utf-8') as file:
-#         json.dump(image, file, ensure_ascii=False, indent=4)
+#test code 
+with open('script.json', 'r', encoding='utf-8') as file:
+        script = json.load(file)
+image = scrap_image(script)
+with open('additional_image.json', 'w', encoding='utf-8') as file:
+        json.dump(image, file, ensure_ascii=False, indent=4)
