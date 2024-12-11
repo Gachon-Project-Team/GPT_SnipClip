@@ -104,17 +104,24 @@ def setup_prompt_gpt_request(category, script):
     return url, header, request
 
 #title로 이미지 재검색
-def scrap_image(script):
+def scrap_image(news_image, script):
     image=[]
     for item in script:
         query = item["title"] 
         news = generate_scrap.news_scrap(query)
         inner_image=[]
+        
+        for existing_item in news_image:
+            if existing_item["category"] == item["category"]:
+                for i in existing_item["image"]:
+                    inner_image.append(i)
+        
         for n in news:
             inner_image.append([n["image"], n["url"]])
         inner_dict = {
             "category": item["category"],
-            "image": inner_image
+            "image": inner_image,
+            "section": item["section"]
         }
         image.append(inner_dict)
         
@@ -124,10 +131,25 @@ def scrap_image(script):
 def preprocess_image(image):
     return 0
 
+def extract_img(scrap):
+    result = []
+    for category, articles in scrap.items():
+        img_result = []
+        for item in articles:
+            img_result.append([item["image"], item["url"]])
+        result_dict = {
+            "category": category,
+            "image": img_result
+        }
+        result.append(result_dict)
+
+    return result
+
 #메인 함수 
-def generate_image(script, ai): 
+def generate_image(scrap, script, ai): 
+    news_image = extract_img(scrap)
     #카테고리 별 title 재검색, 이미지 전처리(중복 내용 제거, 적절한 5개 이미지만 뽑음)
-    image = scrap_image(script) #additional_image.json 으로 확인! 
+    image = scrap_image(news_image,script) #additional_image.json 으로 확인! 
     pre_image = preprocess_image(image)
     
     #ai 사용 여부에 따라 result 생성
@@ -140,8 +162,11 @@ def generate_image(script, ai):
         return merge_script_image(script, pre_image)
 
 # #test code 
+# with open('scrap.json', 'r', encoding='utf-8') as file:
+#         scrap = json.load(file)
 # with open('script.json', 'r', encoding='utf-8') as file:
 #         script = json.load(file)
-# image = scrap_image(script)
+# eximage=extract_img(scrap)
+# image=scrap_image(eximage, script)
 # with open('additional_image.json', 'w', encoding='utf-8') as file:
 #         json.dump(image, file, ensure_ascii=False, indent=4)
