@@ -1,18 +1,7 @@
 import json
 import api_key
 import requests
-
-
-#이미지만 추출 
-def extracted_img(news):
-    result = []
-    for category, articles in news.items():
-        category_data = {
-            "category": category,
-            "image": [(article["image"], article["url"]) for article in articles]
-        }
-        result.append(category_data)
-    return result
+import generate_scrap
 
 #category 기반 이미지 매핑
 def merge_script_image(script, image):
@@ -32,13 +21,6 @@ def merge_script_image(script, image):
 
     return result
 
-#ai 사용시 이미지 생성 호출
-def gen_ai(script):
-    prompt = generate_prompt(script)
-    image = execute_dalle(prompt)
-
-    return merge_script_image(script, image)
-
 #대본 기반 prompt생성 실행  
 def generate_prompt(script):
     result = []
@@ -51,8 +33,6 @@ def generate_prompt(script):
         result.append(gpt_result)
         
     return result
-
-
 
 #GPT 실행
 def execute_gpt(url, header, request):
@@ -73,7 +53,7 @@ def execute_gpt(url, header, request):
         
     return categories
 
-# #4모델 쓸때만 사용 
+#4모델 쓸때만 사용 
 def clean_gpt_response(raw_content):
     raw_content = raw_content.strip()
     if raw_content.startswith("```json"):
@@ -123,70 +103,45 @@ def setup_prompt_gpt_request(category, script):
 
     return url, header, request
 
-#dalle 실행
-def execute_dalle(prompt):
-    result=[]
-    for p in prompt:
-        category=p["category"]
-        prompt=p["prompt"]
-        
-        img_url=[]
-        for s in prompt:
-            innerList=[]
-            url, header, data = set_up_dalle(s)
-            response = requests.post(url, headers=header, json=data)
-            if response.status_code == 200:
-                image_urls = response.json()["data"][0]["url"]
-                innerList.append(image_urls)
-                img_url.append(innerList)
-            else: 
-                print(f"* execute_dalle * Error: {response.status_code}, {response.text}")
-        dict = {
-            "category":category,
-            "image": img_url
+#title로 이미지 재검색
+def scrap_image(script):
+    image=[]
+    inner_image=[]
+    for item in script:
+        query = item["title"] 
+        news = generate_scrap.news_scrap(query)
+        for n in news:
+            inner_image.append([n["image"], n["url"]])
+        inner_dict = {
+            "category": item["category"],
+            "image": inner_image
         }
-        result.append(dict)
-    
-    return result
+        image.append(inner_dict)
+        
+    return image
 
-#dalle setup
-def set_up_dalle(prompt):
-    key = api_key.get_gpt_key()
-    url = "https://api.openai.com/v1/images/generations"
-    
-    header = {
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-    "prompt": f"{prompt}",
-    "n": 1,  # 생성할 이미지 개수
-    "size": "1024x1024"  # 이미지 크기
-    }
-
-    return url, header, data
+#이미지 전처리 
+def preprocess_image(image):
+    return 0
 
 #메인 함수 
-def generate_image(news, script, ai): 
-    #카테고리 별 이미지랑 url만 추출
-    image_url = extracted_img(news)
-
+def generate_image(script, ai): 
+    #카테고리 별 title 재검색, 이미지 전처리(중복 내용 제거, 적절한 5개 이미지만 뽑음)
+    image = scrap_image(script) #additional_image.json 으로 확인! 
+    pre_image = preprocess_image(image)
+    
     #ai 사용 여부에 따라 result 생성
-    #ai 사용하면 스크립트에 맞춘 그림 전부 생성 
+    #ai 사용하면 스크립트에 따라 프롬포트 작성, 생성
     if (ai) : 
-        return gen_ai(script)
+        prompt = generate_prompt(script)
+        return 
     #ai 사용 안하면 실제 기사에 있던 이미지만 사용
     else: 
-        return merge_script_image(script, image_url)
-    
-    
-# #test code
-# with open('scrap.json', 'r', encoding='utf-8') as file:
-#         news = json.load(file)
+        return merge_script_image(script, pre_image)
+
+# #test code 
 # with open('script.json', 'r', encoding='utf-8') as file:
 #         script = json.load(file)
-
-# final = generate_image(news, script, 1)
-# with open('use_ai_image.json', 'w', encoding='utf-8') as file:
-#         json.dump(final, file, ensure_ascii=False, indent=4)
+# image = generate_prompt(script)
+# with open('prompt.json', 'w', encoding='utf-8') as file:
+#         json.dump(image, file, ensure_ascii=False, indent=4)

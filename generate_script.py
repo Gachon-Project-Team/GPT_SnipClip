@@ -4,6 +4,15 @@ from IPython.display import Image, display
 import api_key
 import requests
 
+# 4모델 쓸 때 반환 결과 추가 처리에 사용 
+def clean_gpt_response(raw_content):
+    raw_content = raw_content.strip()
+    if raw_content.startswith("```json"):
+        raw_content = raw_content[7:]  # ```json 제거
+    if raw_content.endswith("```"):
+        raw_content = raw_content[:-3]  # ``` 제거
+    return raw_content
+
 # 각 카테고리 별 내용 요약 실행 
 def make_script(news, query):
     result=[]
@@ -14,7 +23,7 @@ def make_script(news, query):
             result.append(gpt_result)
         else: #gpt_result가 none 인 경우
             continue
-        
+
     return result
 
 # GPT 실행
@@ -25,7 +34,8 @@ def execute_gpt(url, header, request):
         raw_content = response.json()["choices"][0]["message"]["content"]
         try:
             # JSON 파싱
-            categories = json.loads(raw_content)
+            clean_content = clean_gpt_response(raw_content)
+            categories = json.loads(clean_content)
         except json.JSONDecodeError as e:
             print("* gen_script/execute_gpt * Failed to parse JSON:", raw_content, e)
             categories = None
@@ -51,8 +61,8 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
         {
             "role": "system",
             "content": (
-                "Your job is to summarize news articles into a concise short-form script designed to be spoken within 1 minute and 20 seconds. "
-                "The script should be approximately 180 to 225 words long and written in Korean. "
+                "Your job is to summarize news articles into a concise short-form script designed to be spoken within 50 seconds. "
+                "The script should be 150~200 words and written in Korean."
                 "Ensure the output is in the format: {\"category\": \"\", \"title\": \"\", \"section\": [] \"\"}. "
                 f"The value of category must be '{category}'."
             )
@@ -61,7 +71,7 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
             "role": "user",
             "temperature": 1.4,
             "content": (
-                f"The following articles are related to the keyword '{query}'. "
+                f"The following articles are related to the keyword '{query}'."
                 f"Read all the news and summarize it into a one-and-a-half-minute presentation script."
                 f"and generate an appropriate title in Korean. "
                 "Ensure the tone is consistent throughout, and use a unified style for sentence endings."
@@ -78,7 +88,7 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
 
 # 메인 함수
 def generate_script(news, query):
-    #카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "content"=""}] 형태
+    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "content"=""}] 형태
     return make_script(news, query) 
 
 # #test code 

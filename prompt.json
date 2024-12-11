@@ -1,0 +1,52 @@
+[
+    {
+        "category": "category_1",
+        "prompt": [
+            "A bustling academic conference scene featuring researchers from various fields exchanging ideas and presenting their findings, with Gachon University banners and an audience engaged in discussion.",
+            "An engaging presentation on artificial intelligence and data science at a conference, with a diverse group of researchers attentively listening to a speaker at the front displaying vibrant visuals.",
+            "A collaborative research environment at Gachon University, showcasing students and researchers working together on advanced projects, with charts and global collaboration maps displayed in the background.",
+            "A creative depiction of interdisciplinary research aimed at solving social issues, with researchers from different fields brainstorming and working on practical solutions, surrounded by relevant visuals and materials.",
+            "A visual representation of the economic impact of Gachon University's research efforts, illustrating graphs of scientific progress blending with images of local industry and technology advancements, alongside students planning future programs."
+        ]
+    },
+    {
+        "category": "category_2",
+        "prompt": [
+            "An illustration of Gachon University showcasing a modern campus with students walking around and a banner announcing the 2024 admissions plan. The setting is vibrant and welcoming, reflecting the spirit of education and diversity.",
+            "A close-up scene depicting a group of interviewers and students engaged in a serious yet friendly interview process. The atmosphere conveys professionalism and an emphasis on character and academic ability.",
+            "An artistic representation of different departmental interview setups, each tailored uniquely to various fields of study, showcasing candidates in a variety of assessments. The image highlights the diversity of evaluations and the focus on fairness.",
+            "A dynamic illustration of a diverse group of students from different cultures and backgrounds collaborating on a project, symbolizing the university's commitment to embracing talents with international study experiences.",
+            "A digital mockup of the Gachon University official website with clear information about the admissions process, including easy navigation and relevant details for prospective students, all presented in a modern and user-friendly design."
+        ]
+    },
+    {
+        "category": "category_3",
+        "prompt": [
+            "A vibrant campus scene at Gachon University with students celebrating the announcement of new admissions results, featuring banners indicating a 70% acceptance rate, surrounded by blooming trees and excited students gathering around a digital display.",
+            "A close-up of a focused student during an entrance exam, sitting at a desk filled with papers, with a pencil in hand and a serious expression, while a panel of evaluators observes quietly.",
+            "An authoritative figure, the admissions director of Gachon University, speaking confidently to a group of students, with a backdrop of the university's emblem, emphasizing the importance of individual student qualities.",
+            "A visual representation of future admissions processes, showing a roadmap layout with milestones for selecting students, featuring eye-catching graphics of guidelines and eligibility criteria.",
+            "A dynamic image depicting a team of university staff collaborating on new student programs, surrounded by diverse students engaging in various educational activities, highlighting a focus on skill development and support initiatives."
+        ]
+    },
+    {
+        "category": "category_4",
+        "prompt": [
+            "A modern university campus, showcasing Gachon University with banners celebrating the 2024 Microbial Art Competition, and researchers using advanced MRI machines to analyze human biological data in a lab environment.",
+            "An advanced PET/MRI imaging facility in collaboration with KAIST, featuring scientists in lab coats conducting experiments, emphasizing the cutting-edge technology in a high-tech setting.",
+            "A dynamic research team discussing improvement strategies in a bright, open-plan office, with an array of medical technology diagrams and futuristic medical equipment in the background.",
+            "An academic publication process illustrated with a group of international researchers collaborating over papers, laptops, and digital screens displaying global research networks and journals.",
+            "A motivational scene showing enthusiastic students inspired by their university’s achievements, with a backdrop of an inspiring lecture hall filled with aspiring young researchers."
+        ]
+    },
+    {
+        "category": "category_5",
+        "prompt": [
+            "A high-tech medical facility showcasing the AI-based medical solution Lunit INSIGHT MMG being utilized by doctors, with an emphasis on artificial intelligence diagnostic tools, bright lighting, and modern equipment.",
+            "A diverse research team at Gachon University actively analyzing DNA sequences on computer screens, surrounded by data visualizations, engaging in discussions about personalized medicine in a futuristic lab setting.",
+            "An image showing a collaborative meeting between Gachon University representatives and local officials from Cheongju, South Korea, with charts and graphs illustrating the new industrial project aimed at boosting the local economy.",
+            "A vibrant campus scene depicting students participating in international exchange programs, engaged in various activities that highlight global cultures and experiences, with appropriate signage for 2024 internationalization initiatives.",
+            "A modern university campus with state-of-the-art facilities, students studying in well-equipped classrooms, and outdoor learning spaces designed to enhance the educational environment, under a bright blue sky."
+        ]
+    }
+]
