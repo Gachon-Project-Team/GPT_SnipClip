@@ -25,30 +25,28 @@ def news_scrap(query):
         response_body = response.read()
         response_json = json.loads(response_body.decode("utf-8"))   
         links = [item.get("link", "") for item in response_json.get("items", [])]
-        
         article_id = 0  # 각 뉴스 별 ID 생성
-
-    for link in links:
-        try:
-            article_id += 1
-            #link로 접속해 스크래핑
-            article = Article(link, language="ko")
-            article.download()
-            article.parse()
-            #긁어온 정보들 딕셔너리 형태로 저장
-            article_dict = {
-                "id": article_id,
-                "title": article.title,
-                "content": article.text,
-                "image": article.top_image,
-                "url": link
-            }
-            # 내용이 없는 기사 제외하고 data에 저장 
-            if article_dict["content"]:
-                data.append(article_dict)
-        #접속 안되는 링크 console에 error 
-        except Exception as e:
-            print(f"* news_scrap * Failed to process article link - {link}: {e}")
+        for link in links:
+            try:
+                article_id += 1
+                #link로 접속해 스크래핑
+                article = Article(link, language="ko")
+                article.download()
+                article.parse()
+                #긁어온 정보들 딕셔너리 형태로 저장
+                article_dict = {
+                    "id": article_id,
+                    "title": article.title,
+                    "content": article.text,
+                    "image": article.top_image,
+                    "url": link
+                }
+                # 내용이 없는 기사 제외하고 data에 저장 
+                if article_dict["content"]:
+                    data.append(article_dict)
+            #접속 안되는 링크 console에 error 
+            except Exception as e:
+                print(f"* news_scrap * Failed to process article link - {link}: {e}")
     #네이버 뉴스 접속 실패시 console에 error출력 
     else:
         print("* news_scrap * Failed to process Naver News, Error Code:", rescode)
@@ -86,7 +84,6 @@ def setup_gpt_request(data, query):
                     "Return the result in strict JSON format, following this structure: {\"category_num (ex:category_1)\": [news_id, ...]} "
                     "Do not include any articles that are only tangentially related to the query or contain overly generalized or unrelated content. "
                     "Ensure that the classification is fine-grained and avoids overly broad categories. "
-                    # test code "Limit the classification to exactly 3 categories."
                     "Do not include any extra text, Strictly return JSON"
                     f"Here is the data: {filtered_data_json}"
                 )

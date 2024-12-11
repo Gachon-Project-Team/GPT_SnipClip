@@ -72,7 +72,7 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
             "temperature": 1.4,
             "content": (
                 f"The following articles are related to the keyword '{query}'."
-                f"Read all the news and summarize it into a one-and-a-half-minute presentation script."
+                f"Read all the news and summarize it into 50seconds presentation script."
                 f"and generate an appropriate title in Korean. "
                 "Ensure the tone is consistent throughout, and use a unified style for sentence endings."
                 "The script should be natural and spoken, with no symbols or markers, even for section divisions."
