@@ -139,9 +139,9 @@ def generate_image(script, ai):
     else: 
         return merge_script_image(script, pre_image)
 
-#test code 
-with open('script.json', 'r', encoding='utf-8') as file:
-        script = json.load(file)
-image = scrap_image(script)
-with open('additional_image.json', 'w', encoding='utf-8') as file:
-        json.dump(image, file, ensure_ascii=False, indent=4)
+# #test code 
+# with open('script.json', 'r', encoding='utf-8') as file:
+#         script = json.load(file)
+# image = scrap_image(script)
+# with open('additional_image.json', 'w', encoding='utf-8') as file:
+#         json.dump(image, file, ensure_ascii=False, indent=4)
