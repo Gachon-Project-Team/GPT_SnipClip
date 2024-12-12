@@ -20,12 +20,14 @@ def execute_script(news, query):
     result=[]
     for category, articles in news.items():
         url, header, request = setup_gpt_request(category, json.dumps(articles), query)
-        gpt_result = execute_gpt(url, header, request) #반환결과 category, title, contents 딕셔너리
+        gpt_result = execute_gpt(url, header, request) #반환결과 category, title, section, image 딕셔너리
         if gpt_result:
+            image=[]
+            for a in articles:
+                image.append([a["image"], a["url"]])
+            gpt_result["image"]=image
             result.append(gpt_result)
-        else: #gpt_result가 none 인 경우
-            continue
-
+            
     return result
 
 # GPT 실행
@@ -90,5 +92,5 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
 
 # 메인 함수
 def generate_script(news, query):
-    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"=""}] 형태
+    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"="", "image"=[[사진url, 출처url],[사진url, 출처url]]}] 형태
     return execute_script(news, query) 

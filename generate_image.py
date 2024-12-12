@@ -4,6 +4,10 @@ import requests
 import generate_scrap
 import torch
 from diffusers import FluxPipeline
+import json
+import os
+
+#section과 맞는 이미지 파일 매칭
 
 #category 기반 이미지 매핑
 def merge_script_image(script, image):
@@ -106,46 +110,26 @@ def setup_prompt_gpt_request(category, script):
     return url, header, request
 
 #title로 이미지 재검색
-def scrap_image(news_image, script):
-    image=[]
+def scrap_image(script):
     for item in script:
         query = item["title"] 
-        news = generate_scrap.news_scrap(query)
-        inner_image=[]
-        
-        for existing_item in news_image:
-            if existing_item["category"] == item["category"]:
-                for i in existing_item["image"]:
-                    inner_image.append(i)
+        news = generate_scrap.execute_scrap(query)
+        image=[]
         
         for n in news:
-            inner_image.append([n["image"], n["url"]])
-        inner_dict = {
-            "category": item["category"],
-            "image": inner_image,
-            "section": item["section"]
-        }
-        image.append(inner_dict)
+            image.append([n["image"], n["url"]])
         
-    return image
+        item["image"]=item["image"]+image
+        
+    return script
 
 #이미지 전처리 
 def preprocess_image(image):
     return 0
 
-def extract_img(scrap):
-    result = []
-    for category, articles in scrap.items():
-        img_result = []
-        for item in articles:
-            img_result.append([item["image"], item["url"]])
-        result_dict = {
-            "category": category,
-            "image": img_result
-        }
-        result.append(result_dict)
-
-    return result
+# 이미지 저장 디렉토리 생성
+IMAGE_SAVE_DIR = "generated_images"
+os.makedirs(IMAGE_SAVE_DIR, exist_ok=True)
 
 # FLUX.1 파이프라인 설정 함수
 def set_up_flux():
@@ -154,13 +138,12 @@ def set_up_flux():
     return pipe
 
 # FLUX.1 이미지 생성 함수
-def execute_flux(prompts):
+def execute_flux(prompt):
     pipe = set_up_flux()
 
     result = []
-    for prompt_data in prompts:
+    for prompt_data in prompt:
         category = prompt_data["category"]
-        sections = prompt_data["section"]
         prompt_list = prompt_data["prompt"]
 
         img_urls = []
@@ -177,10 +160,12 @@ def execute_flux(prompts):
 
                 filename = f"{category}_{hash(prompt)}.png"
                 image.save(filename)
-                img_urls.append(filename)
+                inner_list=[]
+                inner_list.append(filename)
+                img_urls.append(inner_list)
 
             except Exception as e:
-                print(f"Error generating image for prompt '{prompt}': {e}")
+                print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
 
         torch.cuda.empty_cache()
 
@@ -191,32 +176,17 @@ def execute_flux(prompts):
 
     return result
 
+
 #메인 함수 
-def generate_image(news, script, ai): 
-    news_image = extract_img(news)
-    #카테고리 별 title 재검색, 이미지 전처리(중복 내용 제거, 적절한 5개 이미지만 뽑음)
-    image = scrap_image(news_image,script) #additional_image.json 으로 확인! 
-    with open('pre_image.json', 'w', encoding='utf-8') as file:
-            json.dump(image, file, ensure_ascii=False, indent=4)
-    pre_image = preprocess_image(image)
-    
+def generate_image(script, ai):     
     #ai 사용 여부에 따라 result 생성
     #ai 사용하면 스크립트에 따라 프롬포트 작성, 생성
     if (ai) : 
         prompt = generate_prompt(script)
         ai_image = execute_flux(prompt)
-        
         return merge_script_image(script, ai_image)
     #ai 사용 안하면 실제 기사에 있던 이미지만 사용
     else: 
-        return merge_script_image(script, pre_image)
-
-# #test code 
-# with open('scrap.json', 'r', encoding='utf-8') as file:
-#         scrap = json.load(file)
-# with open('script.json', 'r', encoding='utf-8') as file:
-#         script = json.load(file)
-# eximage=extract_img(scrap)
-# image=scrap_image(eximage, script)
-# with open('additional_image.json', 'w', encoding='utf-8') as file:
-#         json.dump(image, file, ensure_ascii=False, indent=4)
+        image = scrap_image(script)
+        preprocess_image = preprocess_image(image)
+        return merge_script_image(script, preprocess_image)
