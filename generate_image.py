@@ -2,6 +2,8 @@ import json
 import api_key
 import requests
 import generate_scrap
+import torch
+from diffusers import FluxPipeline
 
 #category 기반 이미지 매핑
 def merge_script_image(script, image):
@@ -53,7 +55,7 @@ def execute_gpt(url, header, request):
         
     return categories
 
-#4모델 쓸때만 사용 
+#4모델 쓸 때 반환 결과 추가 처리에 사용 
 def clean_gpt_response(raw_content):
     raw_content = raw_content.strip()
     if raw_content.startswith("```json"):
@@ -145,18 +147,66 @@ def extract_img(scrap):
 
     return result
 
+# FLUX.1 파이프라인 설정 함수
+def set_up_flux():
+    pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-schnell", torch_dtype=torch.bfloat16)
+    pipe.enable_model_cpu_offload()
+    return pipe
+
+# FLUX.1 이미지 생성 함수
+def execute_flux(prompts):
+    pipe = set_up_flux()
+
+    result = []
+    for prompt_data in prompts:
+        category = prompt_data["category"]
+        sections = prompt_data["section"]
+        prompt_list = prompt_data["prompt"]
+
+        img_urls = []
+        for prompt in prompt_list:
+            try:
+                image = pipe(
+                    prompt,
+                    height=512,
+                    width=512,
+                    guidance_scale=7.5,
+                    num_inference_steps=25,
+                    generator=torch.Generator("cpu").manual_seed(0)
+                ).images[0]
+
+                filename = f"{category}_{hash(prompt)}.png"
+                image.save(filename)
+                img_urls.append(filename)
+
+            except Exception as e:
+                print(f"Error generating image for prompt '{prompt}': {e}")
+
+        torch.cuda.empty_cache()
+
+        result.append({
+            "category": category,
+            "image": img_urls
+        })
+
+    return result
+
 #메인 함수 
-def generate_image(scrap, script, ai): 
-    news_image = extract_img(scrap)
+def generate_image(news, script, ai): 
+    news_image = extract_img(news)
     #카테고리 별 title 재검색, 이미지 전처리(중복 내용 제거, 적절한 5개 이미지만 뽑음)
     image = scrap_image(news_image,script) #additional_image.json 으로 확인! 
+    with open('pre_image.json', 'w', encoding='utf-8') as file:
+            json.dump(image, file, ensure_ascii=False, indent=4)
     pre_image = preprocess_image(image)
     
     #ai 사용 여부에 따라 result 생성
     #ai 사용하면 스크립트에 따라 프롬포트 작성, 생성
     if (ai) : 
         prompt = generate_prompt(script)
-        return 
+        ai_image = execute_flux(prompt)
+        
+        return merge_script_image(script, ai_image)
     #ai 사용 안하면 실제 기사에 있던 이미지만 사용
     else: 
         return merge_script_image(script, pre_image)

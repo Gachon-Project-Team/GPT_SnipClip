@@ -4,6 +4,8 @@ from IPython.display import Image, display
 import api_key
 import requests
 
+#각 분류별로 스크립트 생성 (섹션 생성)
+
 # 4모델 쓸 때 반환 결과 추가 처리에 사용 
 def clean_gpt_response(raw_content):
     raw_content = raw_content.strip()
@@ -14,7 +16,7 @@ def clean_gpt_response(raw_content):
     return raw_content
 
 # 각 카테고리 별 내용 요약 실행 
-def make_script(news, query):
+def execute_script(news, query):
     result=[]
     for category, articles in news.items():
         url, header, request = setup_gpt_request(category, json.dumps(articles), query)
@@ -88,12 +90,5 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
 
 # 메인 함수
 def generate_script(news, query):
-    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "content"=""}] 형태
-    return make_script(news, query) 
-
-# #test code 
-# with open('scrap.json', 'r', encoding='utf-8') as file:
-#         news = json.load(file)
-# script = generate_script(news, "가천대학교")
-# with open('script.json', 'w', encoding='utf-8') as file:
-#         json.dump(script, file, ensure_ascii=False, indent=4)
+    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"=""}] 형태
+    return execute_script(news, query) 

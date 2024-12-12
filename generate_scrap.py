@@ -7,7 +7,7 @@ import api_key
 # 뉴스 스크랩 및 분류
 
 # 뉴스 스크랩
-def news_scrap(query):
+def execute_scrap(query):
     client_id, client_secret = api_key.get_naver_key()
     encText = urllib.parse.quote(query) 
     url = f"https://openapi.naver.com/v1/search/news?query={encText}&display=100"
@@ -82,6 +82,7 @@ def setup_gpt_request(data, query):
                     "Prioritize grouping articles with highly similar topics, key figures, events, or narratives together, avoiding broad or loosely connected categorizations. "
                     "Focus on maintaining the strongest thematic coherence within each group. "
                     "Return the result in strict JSON format, following this structure: {\"category_num (ex:category_1)\": [news_id, ...]} "
+                    "Classify them into at least three categories."
                     "Do not include any articles that are only tangentially related to the query or contain overly generalized or unrelated content. "
                     "Ensure that the classification is fine-grained and avoids overly broad categories. "
                     "Do not include any extra text, Strictly return JSON"
@@ -129,20 +130,10 @@ def execute_gpt(data, url, header, request):
 # 메인 함수
 def news_scraper(query):
     #스크랩된 뉴스들 저장 
-    data = news_scrap(query)
+    data = execute_scrap(query)
     #gpt api connection 준비 
     url, header, request = setup_gpt_request(data, query)
     #gpt api와 커넥션 후 분류된 최종 결과 저장 
     result = execute_gpt(data, url, header, request)
     
     return result
-
-# # #test code 
-# query = "가천대학교"
-# result = json.dumps(news_scraper(query), ensure_ascii=False)
-# output_file = "scrap.json" 
-
-# with open(output_file, "w", encoding="utf-8") as f:
-#     f.write(result)
-
-# print("Result saved to scrap.json")
