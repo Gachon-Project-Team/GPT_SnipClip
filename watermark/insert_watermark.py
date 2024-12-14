@@ -8,11 +8,12 @@ def embed_watermark(frame, watermark):
     ycrcb = cv2.cvtColor(frame, cv2.COLOR_BGR2YCrCb)
     y_channel, cr, cb = cv2.split(ycrcb)
 
-    ''' 밝기 성분(Y) 채널에 DWT 적용
-    cA: 저주파 성분
-    cH: 수평 방향 고주파 성분
-    cV: 수직 방향 고주파 성분
-    cD: 대각선 방향 고주파 성분
+    ''' 
+    밝기 성분(Y) 채널에 DWT 적용
+    -cA: 저주파 성분
+    -cH: 수평 방향 고주파 성분
+    -cV: 수직 방향 고주파 성분
+    -cD: 대각선 방향 고주파 성분
     '''
     coeffs = pywt.dwt2(y_channel, 'haar')
     cA, (cH, cV, cD) = coeffs
@@ -38,16 +39,16 @@ def embed_watermark(frame, watermark):
     return frame_modified
 
 
-def add_watermark_to_video(input_video_path, output_video_path, watermark_image_path):
+def insert_watermark(input_video_path, output_video_path, watermark_image_path):
     # 워터마크 이미지를 그레이스케일로 읽어온 후 64X64 크기로 조정
     watermark = cv2.imread(watermark_image_path, cv2.IMREAD_GRAYSCALE)
     if watermark is None:
-        raise FileNotFoundError(f"Watermark image '{watermark_image_path}' not found. Check the file path.")
+        raise FileNotFoundError(f"Watermark image '{watermark_image_path}' Not found")
     watermark = cv2.resize(watermark, (64, 64))
 
     cap = cv2.VideoCapture(input_video_path)
     if not cap.isOpened():
-        raise FileNotFoundError(f"Input video '{input_video_path}' not found. Check the file path.")
+        raise FileNotFoundError(f"Input video '{input_video_path}' Not found")
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             if filename.endswith(".mp4") or filename.endswith(".avi"):
                 input_video_path = os.path.join(input_folder, filename)
                 output_video_path = os.path.join(output_folder, f"{os.path.splitext(filename)[0]}_watermarked.avi")
-                add_watermark_to_video(input_video_path, output_video_path, watermark_image_path)
-                print(f"Watermark embedding completed for '{filename}'")
+                insert_watermark(input_video_path, output_video_path, watermark_image_path)
+                print(f"'{filename}' watermark embedded")
     except FileNotFoundError as e:
         print(e)
