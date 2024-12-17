@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SnipClip</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 및 AOS 라이브러리 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"> 
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" type="text/css">
+
+    <!-- 커스텀 스타일 -->
+    <style>
+      body {
+        background-color: #f3f3f3;
+      }
+
+      h1 {
+        font-family: 'Gugi', serif;
+        color: #336AE2;
+        font-size: 70px;
+        margin-top: 120px;
+        font-weight: bold;
+      }
+
+      p {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 20px;
+        color: rgb(44, 44, 44);
+        font-weight: 400;
+        margin-top: 15px;
+      }
+
+      .btn:hover {
+        background-color: #166cea;
+        color: whitesmoke;
+      }
+
+      .input-group {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+       /* 검색창 스타일 */
+      .search-box-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 0px auto;
+      }
+
+      .search-box {
+        border: 2px solid #ddd;
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-size: 16px;
+        outline: none;
+        width: 400px;
+        transition: all 0.3s ease;
+      }
+
+      .search-box:focus {
+        border-color: #336ae2;
+        box-shadow: 0 0 5px rgba(51, 106, 226, 0.5);
+      }
+
+      .submit {
+        background-color: #336ae2;
+        border: none;
+        border-radius: 30px;
+        color: #fff;
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .submit:hover {
+        background-color: #1a4fa0;
+      }
+
+      .fa-search {
+        font-size: 18px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div class="container py-4">
+        <!-- 설명 부분 -->
+        <div class="text-center py-5" data-aos="fade-up" data-aos-duration="3000">
+          <h1>SnipClip</h1>
+          <p>
+            뉴스를 찾아 1분 영상으로 빠르게 만들어 드립니다.<br>
+            입력한 키워드로 스크랩된 영상이 자동으로 생성됩니다.<br>
+            지금 바로 원하는 검색어를 입력해 보세요!
+          </p>
+        </div>
+
+        <div class="container" data-aos="fade-up" data-aos-duration="3000">
+          <div class="search-box-container">
+            <input type="text" class="search-box" placeholder="Search...">
+            <button class="submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+          <h3 class="response"></h3>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- AOS 및 Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>
