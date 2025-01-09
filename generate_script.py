@@ -65,32 +65,38 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
         {
             "role": "system",
             "content": (
-                "Your job is to summarize news articles into a concise short-form script designed to be spoken within 50 seconds. "
-                "The script should be 150~200 words and written in Korean."
-                "Ensure the output is in the format: {\"category\": \"\", \"title\": \"\", \"section\": [] \"\"}. "
-                f"The value of category must be '{category}'."
+                "Your task is to summarize a news story in a short script that can be delivered in under 50 seconds."
+                "The script should be concise, within 150-200 words, and written in Korean with a conversational tone appropriate for natural speaking."
+                "Focus on highlighting the key points clearly without making the summary too abstract."
+                "The script should be written in a natural flow without thinking of the sectioning at first."
+                "Once the script is completed, divide it into exactly 10 sections for a consistent flow, ensuring the natural continuation between sections."
+                "For each pair of adjacent sections (e.g., sections 1-2, 2-3, 3-4, etc.), evaluate if AI image generation is appropriate based on the following criteria:"
+                "- If the section contains a proper noun (e.g., names, places, titles) and it is a primary subject, set the value to 0 (real images are preferred)."
+                "- If no such proper noun is included or the context allows AI generation, set the value to 1."
+                "You will provide 5 values for the 'ai' field, based on the evaluation of the following pairs of sections: 1-2, 2-3, 3-4, 4-5, 5-6."
+                "Ensure that the final AI image usage and real images are mixed appropriately based on context."
+                "Include the source URL used to write the script for reference."
             )
         },
         {
             "role": "user",
-            "temperature": 1.4,
             "content": (
-                f"The following articles are related to the keyword '{query}'."
-                f"Read all the news and summarize it into 50seconds presentation script."
-                f"and generate an appropriate title in Korean. "
-                "Ensure the tone is consistent throughout, and use a unified style for sentence endings."
-                "The script should be natural and spoken, with no symbols or markers, even for section divisions."
-                "Please divide the generated script into 5 sections, formatted like [\"section1\", \"section2\"]. Then return it in the format specified below, in English."
-                f"Return the response in this JSON format: {{\"category\": \"{category}\", \"title\": \"\", \"section\": [] \"\"}}.\n\n"
-                f"{news}"
-                )
-            }
-        ]
-    } 
+                f"Summarize news articles related to the keyword '{query}' into a conversational, 50-second voice presentation script."
+                "Focus on clarity and consistency in tone, ensuring the style is unified at the end of each sentence."
+                "Provide the output in the following JSON format:\n\n"
+                f"category must be same {category}. do not edit it"
+                "{\n  \"category\": \"{category}\",\n  \"title\": \"{title}\",\n  \"sections\": [\"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\"],\n  \"ai\": [0, 0, 0, 0, 0],\n  \"references\": [\"\", \"\", \"\"]\n}\n\n"
+                f"Here is the data: {news}"
+            )
+        }
+    ]
+}
+
+
 
     return url, header, request
 
 # 메인 함수
 def generate_script(news, query):
-    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"="", "image"=[[사진url, 출처url],[사진url, 출처url]]}] 형태
+    # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"="", "ai"=[], "reference"=[], "image"=[[사진url, 출처url],[사진url, 출처url]]}] 형태
     return execute_script(news, query) 

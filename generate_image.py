@@ -6,8 +6,13 @@ import torch
 from diffusers import FluxPipeline
 import json
 import os
-
-#section과 맞는 이미지 파일 매칭
+import logging
+import shutil
+from PIL import Image
+from piq import ssim
+import numpy as np
+from io import BytesIO
+import map_img_script
 
 #category 기반 이미지 매핑
 def merge_script_image(script, image):
@@ -20,24 +25,12 @@ def merge_script_image(script, image):
         merged_item = {
             "category": item["category"],
             "title": item["title"],
-            "section": item["section"],
+            "section": item["sections"],
+            "reference": item["references"],
             "image": image_mapping.get(item["category"], None) 
             }
         result.append(merged_item)
 
-    return result
-
-#대본 기반 prompt생성 실행  
-def generate_prompt(script):
-    result = []
-    for s in script:
-        category=s["category"]
-        script=s["section"]
-        url, header, request = setup_prompt_gpt_request(category, script)
-        gpt_result = execute_gpt(url, header, request)
-        
-        result.append(gpt_result)
-        
     return result
 
 #GPT 실행
@@ -69,7 +62,7 @@ def clean_gpt_response(raw_content):
     return raw_content
 
 #prompt 생성 gpt 쿼리 
-def setup_prompt_gpt_request(category, script):
+def setup_prompt_gpt_request(section):
     key = api_key.get_gpt_key()
     url = "https://api.openai.com/v1/chat/completions"
     
@@ -83,53 +76,35 @@ def setup_prompt_gpt_request(category, script):
     "messages": [
         {
             "role": "system",
-            "content": (
-                "You are a content assistant specializing in analyzing scripts for short-form video creation. "
-                "Your task is create detailed prompts for image generation using DALL·E. "
-                "Each result must include the following components: "
-                "- The category of the script "
-                "- A single descriptive image prompt for each section, suitable for DALL·E generation. "
-                "Ensure that the prompts are vivid, detailed, and contextually aligned with the narrative. "
-                "Additionally, include any other related queries or requirements from the user."
-            )
+            "content": "You are a content assistant who specializes in script analysis for short-form video production. Your mission is to use image creation AI to create detailed prompts for image creation. When given a script section, generate a concise image prompt that accurately represents the content of that section. Do not include unnecessary words."
         },
         {
             "role": "user",
-            "content": (
-                "Each section is separated by quotation marks."
-                "For each section, create a single descriptive image prompt suitable for DALL·E generation. "
-                f"category value must be same \"{category}\". don't edit!!!!!! "
-                "Return the result in the following format: "
-                f"{{\"category\": {category}, \"prompt\": [\"prompt for section 1\", \"prompt for section 2\"...]}}"
-                f"here is script {script}"
-            )
+            "content": f"Here's the script section: {section}"
         }
     ]
 }
 
     return url, header, request
 
-#title로 이미지 재검색
+#대본 기반 prompt생성 실행  
+def generate_prompt(section):
+    url, header, request = setup_prompt_gpt_request(section)
+    gpt_result = execute_gpt(url, header, request)
+
+    return gpt_result
+
+#title로 이미지 재검색, 전체 이미지 [[url, reference], ] 형태
 def scrap_image(script):
+    result = []
     for item in script:
         query = item["title"] 
         news = generate_scrap.execute_scrap(query)
-        image=[]
-        
+        result = result + item["image"]
         for n in news:
-            image.append([n["image"], n["url"]])
-        
-        item["image"]=item["image"]+image
-        
-    return script
-
-#이미지 전처리 
-def preprocess_image(image):
-    return 0
-
-# 이미지 저장 디렉토리 생성
-IMAGE_SAVE_DIR = "generated_images"
-os.makedirs(IMAGE_SAVE_DIR, exist_ok=True)
+            result.append([n["image"], n["url"]])
+            
+    return result
 
 # FLUX.1 파이프라인 설정 함수
 def set_up_flux():
@@ -141,52 +116,152 @@ def set_up_flux():
 def execute_flux(prompt):
     pipe = set_up_flux()
 
-    result = []
-    for prompt_data in prompt:
-        category = prompt_data["category"]
-        prompt_list = prompt_data["prompt"]
+    try:
+        # 생성할 이미지 파일 경로
+        folder_path = "generate_image"
+        os.makedirs(folder_path, exist_ok=True)  # 폴더가 없으면 생성
+        
+        # 이미지를 생성
+        image = pipe(
+            prompt,
+            height=512,
+            width=512,
+            guidance_scale=7.5,
+            num_inference_steps=25,
+            generator=torch.Generator("cpu").manual_seed(0)
+        ).images[0]
 
-        img_urls = []
-        for prompt in prompt_list:
-            try:
-                image = pipe(
-                    prompt,
-                    height=512,
-                    width=512,
-                    guidance_scale=7.5,
-                    num_inference_steps=25,
-                    generator=torch.Generator("cpu").manual_seed(0)
-                ).images[0]
+        # 파일명 생성
+        filename = f"{hash(prompt)}.png"
+        image_path = os.path.join(folder_path, filename)  # 폴더 경로와 파일명 결합
+        image.save(image_path)
 
-                filename = f"{category}_{hash(prompt)}.png"
-                image.save(filename)
-                inner_list=[]
-                inner_list.append(filename)
-                img_urls.append(inner_list)
+        # URL 반환 (로컬 파일 경로)
+        image_url = f"file://{image_path}"
 
-            except Exception as e:
-                print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
+    except Exception as e:
+        print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
+        image_url = None
 
-        torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
 
-        result.append({
-            "category": category,
-            "image": img_urls
-        })
+    return image_url
 
-    return result
+def is_similar_ssim(image_path, existing_images, threshold=0.9):
+    try:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        # 새 이미지 처리
+        new_image = Image.open(image_path).resize((400, 400)).convert("RGB")
+        new_image = np.array(new_image) / 255.0  # [0, 1] 정규화
+        new_image = torch.tensor(new_image, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).to(device)
+
+        # 기존 이미지와 비교
+        for existing_path in existing_images:
+            existing_image = Image.open(existing_path).resize((400, 400)).convert("RGB")
+            existing_image = np.array(existing_image) / 255.0
+            existing_image = torch.tensor(existing_image, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).to(device)
+
+            # SSIM 계산 (piq 사용)
+            ssim_score = ssim(new_image, existing_image, data_range=1.0).item()
+
+            if ssim_score >= threshold:
+                return True  # 유사 이미지 찾음
+
+    except Exception as e:
+        print(f"Error during SSIM comparison: {e}")
+        return False
+
+    return False  # 유사 이미지 없음
+
+def download_img(image):
+    save_dir = "./image"
+    
+    # 기존 디렉토리 삭제 후 새로 생성
+    if os.path.exists(save_dir):
+        shutil.rmtree(save_dir)
+    os.makedirs(save_dir, exist_ok=True)
+
+    idx = 0
+    successful_downloads = []  # 다운로드 성공한 이미지 저장 리스트
+    existing_images = []  # 기존 저장된 이미지 경로 리스트
+
+    for i in image:
+        try:
+            url = i[0]  # URL 추출
+            logging.info(f"Processing image: {url}")
+            response = requests.get(url)  # URL에서 이미지 가져오기
+            response.raise_for_status()  # HTTP 상태 확인
+            img_data = Image.open(BytesIO(response.content)).convert("RGB")
+            file_extension = img_data.format.lower() if img_data.format else "jpg"
+
+            supported_formats = ['jpeg', 'jpg', 'png', 'bmp', 'tiff']
+
+            # 지원되지 않는 파일 형식 검사
+            if file_extension not in supported_formats:
+                raise ValueError(f"Unsupported image format: {file_extension}")
+
+            # 이미지 크기 확인
+            width, height = img_data.size
+            if width <= 300 or height <= 300:  # 가로 또는 세로가 300 이하인 경우
+                logging.info(f"Image {url} is too small (width: {width}, height: {height}). Skipping.")
+                continue
+            
+            # 파일 저장 경로 생성
+            file_name = f"image_{idx}.{file_extension}"
+            save_path = os.path.join(save_dir, file_name)
+
+            # 이미지 임시 저장
+            img_data.save(save_path)
+
+            # SSIM 비교: 기존 이미지와 유사한지 확인
+            if existing_images:  # 기존 이미지가 있는 경우에만 비교
+                if is_similar_ssim(save_path, existing_images, threshold=0.8):
+                    logging.info(f"Image {url} is too similar to existing images. Skipping.")
+                    os.remove(save_path)  # 유사하면 저장된 파일 삭제
+                    continue
+
+            # 유사하지 않거나 첫 이미지인 경우 저장
+            existing_images.append(save_path)
+            successful_downloads.append(i)  # ["사진다운url", "출처뉴스url"] 형식 유지
+            logging.info(f"Saved successfully: {save_path}")
+            idx += 1
+        
+        except Exception as e:
+            logging.error(f"* download_img * Failed to process {i[0]}: {e}")
+    
+    logging.info(f"Final successful downloads: {successful_downloads}")  # 디버깅: 최종 성공 리스트 출력
+    return successful_downloads  # 성공적으로 다운로드된 이미지만 반환
+
+def mapping_image(category, query, image_list, image_val):
+    section = [category["sections"][i]+category["sections"][i+1] for i in range(0, 10, 2)] 
+    image = []
+    for i in range(len(category["ai"])):
+        if category["ai"][i]==0:
+            #ai 안 쓸 때 
+            image.append(map_img_script.mapping_image_script(section[i], query,  image_list, image_val))
+        elif category["ai"][i]==1:
+            #ai 쓸 때 
+            prompt=generate_prompt(section[i])
+            url = execute_flux(prompt)
+            image.append([url, 0])
+    result = {
+        "category":category["category"],
+        "image":image
+    }
+    return result 
 
 #메인 함수 
-def generate_image(script, ai):     
-    #ai 사용 여부에 따라 result 생성
-    #ai 사용하면 스크립트에 따라 프롬포트 작성, 생성
-    if (ai) : 
-        prompt = generate_prompt(script)
-        ai_image = execute_flux(prompt)
-        return merge_script_image(script, ai_image)
-    #ai 사용 안하면 실제 기사에 있던 이미지만 사용
-    else: 
-        image = scrap_image(script)
-        preprocess_image = preprocess_image(image)
-        return merge_script_image(script, preprocess_image)
+def generate_image(script, query): 
+    image = scrap_image(script) #이미지 추가 스크랩
+    image_list = download_img(image) #다운된 이미지들 목록 [[url, reference 형식]]
+    print(image_list)
+    image_val = map_img_script.image_embedding() #image 폴더에 있는 것들 임베딩 리스트 형태
+    image_result=[]    
+    for category in script: 
+        category_result = mapping_image(category, query, image_list, image_val)
+        image_result.append(category_result)
+
+    result = merge_script_image(script, image_result)
+
+    return result
