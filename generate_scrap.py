@@ -10,7 +10,7 @@ import api_key
 def execute_scrap(query):
     client_id, client_secret = api_key.get_naver_key()
     encText = urllib.parse.quote(query) 
-    url = f"https://openapi.naver.com/v1/search/news?query={encText}&display=100"
+    url = f"https://openapi.naver.com/v1/search/news?query={encText}&sort=sim&display=100"
     data = [] #기사를 저장할 리스트, 딕셔너리 리스트 형태, key = id, title, content, image, url
     
     # naver 기사 api 링크 접속
@@ -60,6 +60,9 @@ def setup_gpt_request(data, query):
     keys = ["id", "title"]
     filtered_data = [{key: item[key] for key in keys} for item in data]
     filtered_data_json = json.dumps(filtered_data, ensure_ascii=False) 
+
+    with open("data.json", "w", encoding="utf-8") as file:
+        json.dump(filtered_data, file, ensure_ascii=False, indent=4)    
     
     header = {
         "Authorization": f"Bearer {key}",

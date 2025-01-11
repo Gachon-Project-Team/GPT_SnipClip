@@ -1,10 +1,6 @@
-import json
-import api_key
 import requests
 import generate_scrap
 import torch
-from diffusers import FluxPipeline
-import json
 import os
 import logging
 import shutil
@@ -12,141 +8,28 @@ from PIL import Image
 from piq import ssim
 import numpy as np
 from io import BytesIO
-import map_img_script
+import flux
+import os
+from PIL import Image
+import torch
+from transformers import CLIPModel, CLIPProcessor
 
-#category 기반 이미지 매핑
-def merge_script_image(script, image):
-    # 1. category="", image=[] 형식으로 변경
-    image_mapping = {item["category"]: item["image"] for item in image}
-    
-    # 2. 스크립트 데이터를 순회하며 병합
+# flux 이미지 저장 폴더
+IMAGE_SAVE_DIR = "generated_images"
+os.makedirs(IMAGE_SAVE_DIR, exist_ok=True)
+
+# 이미지 추가 스크랩 및 전체 이미지를 하나의 리스트에 넣음 
+def scrap_image(script, query):
     result = []
+    news = generate_scrap.execute_scrap(query)
+    for n in news:
+            result.append([n["image"], n["url"]])   
     for item in script:
-        merged_item = {
-            "category": item["category"],
-            "title": item["title"],
-            "section": item["sections"],
-            "reference": item["references"],
-            "image": image_mapping.get(item["category"], None) 
-            }
-        result.append(merged_item)
-
-    return result
-
-#GPT 실행
-def execute_gpt(url, header, request):
-    response = requests.post(url, headers=header, json=request)
-    
-    if response.status_code == 200:
-        raw_content = response.json()["choices"][0]["message"]["content"]
-        clean_content = clean_gpt_response(raw_content)
-        try:
-            # JSON 파싱
-            categories = json.loads(clean_content)
-        except json.JSONDecodeError as e:
-            print("* gen_image/execute_gpt * Failed to parse JSON:", raw_content, e)
-            categories = None
-    else:
-        print(f"* gen_image/execute_gpt * response Error: {response.status_code}")
-        categories = None
-        
-    return categories
-
-#4모델 쓸 때 반환 결과 추가 처리에 사용 
-def clean_gpt_response(raw_content):
-    raw_content = raw_content.strip()
-    if raw_content.startswith("```json"):
-        raw_content = raw_content[7:]  # ```json 제거
-    if raw_content.endswith("```"):
-        raw_content = raw_content[:-3]  # ``` 제거
-    return raw_content
-
-#prompt 생성 gpt 쿼리 
-def setup_prompt_gpt_request(section):
-    key = api_key.get_gpt_key()
-    url = "https://api.openai.com/v1/chat/completions"
-    
-    header = {
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json"
-    }
-
-    request = {
-    "model": "gpt-4o-mini",
-    "messages": [
-        {
-            "role": "system",
-            "content": "You are a content assistant who specializes in script analysis for short-form video production. Your mission is to use image creation AI to create detailed prompts for image creation. When given a script section, generate a concise image prompt that accurately represents the content of that section. Do not include unnecessary words."
-        },
-        {
-            "role": "user",
-            "content": f"Here's the script section: {section}"
-        }
-    ]
-}
-
-    return url, header, request
-
-#대본 기반 prompt생성 실행  
-def generate_prompt(section):
-    url, header, request = setup_prompt_gpt_request(section)
-    gpt_result = execute_gpt(url, header, request)
-
-    return gpt_result
-
-#title로 이미지 재검색, 전체 이미지 [[url, reference], ] 형태
-def scrap_image(script):
-    result = []
-    for item in script:
-        query = item["title"] 
-        news = generate_scrap.execute_scrap(query)
         result = result + item["image"]
-        for n in news:
-            result.append([n["image"], n["url"]])
-            
+
     return result
 
-# FLUX.1 파이프라인 설정 함수
-def set_up_flux():
-    pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-schnell", torch_dtype=torch.bfloat16)
-    pipe.enable_model_cpu_offload()
-    return pipe
-
-# FLUX.1 이미지 생성 함수
-def execute_flux(prompt):
-    pipe = set_up_flux()
-
-    try:
-        # 생성할 이미지 파일 경로
-        folder_path = "generate_image"
-        os.makedirs(folder_path, exist_ok=True)  # 폴더가 없으면 생성
-        
-        # 이미지를 생성
-        image = pipe(
-            prompt,
-            height=512,
-            width=512,
-            guidance_scale=7.5,
-            num_inference_steps=25,
-            generator=torch.Generator("cpu").manual_seed(0)
-        ).images[0]
-
-        # 파일명 생성
-        filename = f"{hash(prompt)}.png"
-        image_path = os.path.join(folder_path, filename)  # 폴더 경로와 파일명 결합
-        image.save(image_path)
-
-        # URL 반환 (로컬 파일 경로)
-        image_url = f"file://{image_path}"
-
-    except Exception as e:
-        print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
-        image_url = None
-
-    torch.cuda.empty_cache()
-
-    return image_url
-
+# ssim 유사도 
 def is_similar_ssim(image_path, existing_images, threshold=0.9):
     try:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -174,10 +57,11 @@ def is_similar_ssim(image_path, existing_images, threshold=0.9):
 
     return False  # 유사 이미지 없음
 
-def download_img(image):
+# ssim 이용 유사도 체크 후 이미지 다운로드
+def download_img(image): # image는[[url, ref url]] 형태
     save_dir = "./image"
     
-    # 기존 디렉토리 삭제 후 새로 생성
+    # 기존 디렉토리 존재시 삭제 후 새로 생성
     if os.path.exists(save_dir):
         shutil.rmtree(save_dir)
     os.makedirs(save_dir, exist_ok=True)
@@ -203,7 +87,7 @@ def download_img(image):
 
             # 이미지 크기 확인
             width, height = img_data.size
-            if width <= 300 or height <= 300:  # 가로 또는 세로가 300 이하인 경우
+            if width <= 300 or height <= 300:  # 가로 또는 세로가 300 이하인 경우 제거
                 logging.info(f"Image {url} is too small (width: {width}, height: {height}). Skipping.")
                 continue
             
@@ -233,18 +117,111 @@ def download_img(image):
     logging.info(f"Final successful downloads: {successful_downloads}")  # 디버깅: 최종 성공 리스트 출력
     return successful_downloads  # 성공적으로 다운로드된 이미지만 반환
 
-def mapping_image(category, query, image_list, image_val):
-    section = [category["sections"][i]+category["sections"][i+1] for i in range(0, 10, 2)] 
+# koClip 모델 설정
+def set_model():
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+        logging.info("Using MPS")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+        logging.info("Using CUDA")
+    else:
+        device = torch.device("cpu")
+        logging.warning("Using CPU")
+
+    model_name = "Bingsu/clip-vit-large-patch14-ko"
+    model = CLIPModel.from_pretrained(model_name).to(device)
+    processor = CLIPProcessor.from_pretrained(model_name)
+
+    return device, model, processor
+
+# koClip 사용 대본 임베딩
+def script_embedding(query, section):
+    device, model, processor = set_model()
+    try:
+        text_inputs = processor(text=query + " " + section, return_tensors="pt", padding=True, truncation=True).to(device)
+        with torch.no_grad():
+            text_outputs = model.get_text_features(**text_inputs)
+            text_embedding = text_outputs.squeeze().to("cpu")
+    except Exception as e:
+        logging.error(f"* script_embedding * Failed processing section: {e}")
+    return text_embedding
+
+# koClip 사용 이미지 임베딩
+def image_embedding():
+    device, model, processor = set_model()
+    result = []
+    image_dir = "./image"
+
+    # 이미지 폴더 순회
+    for image_file in sorted(os.listdir(image_dir)):
+        # 이미지 파일만 처리
+        if not image_file.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
+            continue
+
+        image_path = os.path.join(image_dir, image_file)
+        try:
+            # 이미지 열기 및 임베딩 생성
+            image = Image.open(image_path).convert("RGB")
+            inputs = processor(images=image, return_tensors="pt").to(device)
+            with torch.no_grad():
+                image_outputs = model.get_image_features(**inputs)
+            image_embedding = image_outputs.squeeze().to("cpu")  # 임베딩 벡터
+            result.append(image_embedding)  # 결과 리스트에 추가
+        except Exception as e:
+            logging.error(f"* image_embedding * Failed processing {image_file}: {e}")
+            result.append(torch.zeros(512))  # 오류 시 기본값 (512차원 영벡터)
+
+    return result
+
+# 대본과 이미지 임베딩 값 사이 코사인 유사도 확인
+def cosine_similarity(script_val, image_val): #script는 섹션 하나 임베딩 값, , image는 전체 이미지 임베딩한값임
+    section_similarity=[]
+    # 이미지 임베딩과의 개별 유사도 계산
+    for img in image_val:
+        similarity = torch.nn.functional.cosine_similarity(script_val, img, dim=0)
+        section_similarity.append(similarity.item())  # 유사도 값을 리스트에 저장
+        # 가장 높은 유사도를 가진 이미지 인덱스 찾기
+    max_similarity_idx = section_similarity.index(max(section_similarity))
+    #해당 인덱스 반환
+    return max_similarity_idx
+
+#category 기반 이미지 매핑
+def merge_script_image(script, image):
+    # 1. category="", image=[] 형식으로 변경
+    image_mapping = {item["category"]: item["image"] for item in image}
+    
+    # 2. 스크립트 데이터를 순회하며 병합
+    result = []
+    for item in script:
+        merged_item = {
+            "category": item["category"],
+            "title": item["title"],
+            "section": item["sections"],
+            "reference": item["references"],
+            "image": image_mapping.get(item["category"], None) 
+            }
+        result.append(merged_item)
+
+    return result
+
+# 한 카테고리별로 이미지 매칭 실행
+def image_mat(category, query, image_list, image_val):
+    section = [category["sections"][i]+category["sections"][i+1] for i in range(0, 10, 2)] #섹션 5개로 (script만들 때 10개로 나뉘는데 사진은 5개 필요하니까)
     image = []
-    for i in range(len(category["ai"])):
-        if category["ai"][i]==0:
+    for i in range(len(category["ai"])): #ai 사용 여부에 따라 이미지 매칭 방식이 clip을 사용하는지 flux를 사용하는지로 나뉨
+        if category["ai"][i]==0: 
             #ai 안 쓸 때 
-            image.append(map_img_script.mapping_image_script(section[i], query,  image_list, image_val))
+             #koClip모델 설정 
+            script_val = script_embedding(query, section[i]) #섹션 하나 임베딩
+            index = cosine_similarity(script_val, image_val) #해당 섹션과 전체 이미지 값 코사인 유사도 검사, 가장 유사도 높은 이미지의 인덱스를 가져옴
+            result = image_list[index] # 해당 이미지의 [url, ref url]을 result에 저장
+            image.append(result) # 최종으로 반환할 이미지 리스트에 append
         elif category["ai"][i]==1:
             #ai 쓸 때 
-            prompt=generate_prompt(section[i])
-            url = execute_flux(prompt)
-            image.append([url, 0])
+            prompt=flux.generate_prompt(section[i]) #section i에 대한 프롬프트 생성 
+            url = flux.execute_flux(prompt) #해당 프롬프트로 이미지 생성 
+            image.append([url, 0]) #결과 url, ref는 없으니까 0 저장 
     result = {
         "category":category["category"],
         "image":image
@@ -253,15 +230,14 @@ def mapping_image(category, query, image_list, image_val):
 
 #메인 함수 
 def generate_image(script, query): 
-    image = scrap_image(script) #이미지 추가 스크랩
-    image_list = download_img(image) #다운된 이미지들 목록 [[url, reference 형식]]
-    print(image_list)
-    image_val = map_img_script.image_embedding() #image 폴더에 있는 것들 임베딩 리스트 형태
-    image_result=[]    
+    image = scrap_image(script, query) #이미지 추가 스크랩 및 전체 이미지 하나의 리스트로 생성
+    image_list = download_img(image) #다운된 이미지들 목록 [[url, reference]] 형식
+    image_val = image_embedding() #이미지 전체 임베딩 값 리스트 
+    image_result=[] 
     for category in script: 
-        category_result = mapping_image(category, query, image_list, image_val)
-        image_result.append(category_result)
+        category_result = image_mat(category, query, image_list, image_val) #한 카테고리에 대한 이미지 매칭 결과 {"category": "category_1, "image": [[url, ref]]} 형식
+        image_result.append(category_result) #모든 카테고리에 대한 결과를 한 리스트로 묶음
 
-    result = merge_script_image(script, image_result)
+    result = merge_script_image(script, image_result) #해당 이미지 매칭 파일을 카테고리별로 섹션, 타이틀 등과 매칭해서 최종 파일 생성
 
     return result
