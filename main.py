@@ -5,12 +5,14 @@ from datetime import datetime
 import json
  
 def execute(query):
-  news=generate_scrap.news_scraper(query)
+  # news=generate_scrap.news_scraper(query)
+  # with open("scrap.json", "w", encoding="utf-8") as json_file:
+  #    json.dump(news, json_file, indent=4, ensure_ascii=False)
+  with open("scrap.json", "r", encoding="utf-8") as json_file:
+      news = json.load(json_file) 
   script=generate_script.generate_script(news, query)
-  result = generate_image.generate_image(script, query)
+  with open("script.json", "w", encoding="utf-8") as json_file:
+     json.dump(script, json_file, indent=4, ensure_ascii=False)
 
-  return result
 
-result = execute("query") 
-with open("result.json", "w") as json_file:
-    json.dump(result, json_file, indent=4)
+execute("푸바오") 

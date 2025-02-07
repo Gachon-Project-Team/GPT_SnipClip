@@ -21,7 +21,6 @@ def execute_script(news, query):
     for category, articles in news.items():
         url, header, request = setup_gpt_request(category, json.dumps(articles), query)
         gpt_result = execute_gpt(url, header, request) #반환결과 category, title, section, image 딕셔너리
-        print(gpt_result)
         if gpt_result:
             image=[]
             for a in articles:
@@ -39,37 +38,46 @@ def setup_gpt_ai_request(sections):
         "Authorization": f"Bearer {key}",
         "Content-Type": "application/json"
     }
-
     request = {
     "model": "gpt-4o-mini",
     "messages": [
         {
             "role": "system",
             "content": (
-                "Your task is to determine if a section of text requires a real image (0) or an AI-generated image (1). "
-                "For each section, you must analyze whether the subject is a specific entity or object, or if the subject is more abstract or general. "
-                "Use the following guidelines:\n\n"
-                "1. If the subject is a specific object, entity, or character (e.g., a person, animal, well-known location, etc.), return 0 for a real image.\n"
-                "2. If the subject is abstract or general, and doesn't refer to a specific object, return 1 for an AI-generated image.\n"
-                "3. If both types of images are suitable, return both real and AI images in a mixed format.\n\n"
-                "The result should be a list of 0s and 1s, where 0 represents a real image and 1 represents an AI-generated image. "
-                "The result should be in the format of lists of lists. For example: [[0, 1], [0, 0, 1]]\n\n"
-                "Each section corresponds to one sentence or unit of text, so you should provide one result per section."
+                "Your task is to determine whether an image should be a real image (0) or an AI-generated image (1) based on the given text section.\n\n"
+                "Follow these rules:\n"
+                "1. If the subject refers to a specific object, entity, or character (e.g., a real person, animal, well-known location, or named object), return 0 (real image).\n"
+                "2. If the subject is abstract, general, or does not refer to a specific target, return 1 (AI-generated image).\n"
+                "3. If both real and AI-generated images are suitable, return a mix of 0s and 1s.\n\n"
+                "The result should be a list of 0s and 1s, where:\n"
+                "- 0 = real image\n"
+                "- 1 = AI-generated image\n\n"
+                "Return the results in list format, for example: [[0, 1, 0, 1, 1], [1, 1, 0, 0, 1]].\n"
+                "Each section corresponds to a single sentence or text unit, so you must provide one result per section.\n\n"
+                "### Examples:\n"
+                "- '푸바오를 돌보는 관리인은 그의 특별한 성격과 행동에 대해 이야기했습니다.'\n"
+                "  - Subject: '푸바오' (a specific panda)\n"
+                "  - Result: [0] (real image)\n"
+                "\n"
+                "- '동물원은 푸바오가 대중에게 긍정적인 이미지로 각인될 수 있도록 다양한 홍보 활동을 펼치고 있습니다.'\n"
+                "  - Subject: '동물원' (general concept, not a specific zoo)\n"
+                "  - Result: [1] (AI-generated image)\n"
+                "\n"
+                "- '푸바오는 한국 최초의 자이언트 판다로, 많은 박람회와 행사에 참가할 예정입니다.'\n"
+                "  - Subject: '푸바오' (specific panda), but the focus is on participation in events (general idea)\n"
+                "  - Result: [1] (AI-generated image)\n"
             )
         },
         {
             "role": "user",
             "content": (
-                f"Here are the sections to analyze: {sections}. Please determine the image type for each section based on the above criteria. "
-                "Return format: ex. [[0, 1, 0, 1, 0], [1, 0, 1, 0, 1]...]. Do not return any other description. Return only the list."
+                f"Here is a section to analyze: {sections}. Please determine the appropriate image type for each section based on the criteria above.\n"
+                "Return format: [[0, 1, 0, 1, 0], [1, 0, 0, 1, 0] ...]; no other explanation, only the list."
             )
         }
     ]
 }
-    
     return url, header, request
-
-
 
 # GPT 실행
 def execute_gpt(url, header, request):
@@ -135,22 +143,18 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
     ]
 }
 
-
     return url, header, request
 
 # ai 이미지 or 실제 이미지 구분 
 def execute_image_map(section):
     url, header, request = setup_gpt_ai_request(section)
     result = execute_gpt(url, header, request) #반환결과 category, title, section, image 딕셔너리
-
     return result
-
 
 # 메인 함수
 def generate_script(news, query):
     # 카테고리별로 대본 생성 GPT에 요청 [{"category"="", "title"="", "section"="", "ai"=[], "reference"=[], "image"=[[사진url, 출처url],[사진url, 출처url]]}] 형태
     script = execute_script(news, query) 
-    print(script)
     result=[]
     for i in script:
         sections=[]
@@ -158,11 +162,9 @@ def generate_script(news, query):
             section = i["sections"][k]+i["sections"][k+1]
             sections.append(section)
         result.append(sections)    
-    print(result)
     ai = execute_image_map(result)
-    print("\n ** ai ** \n")
-    print(ai)
     for i in range(len(ai)):
         script[i]["ai"]=ai[i]
 
     return script
+
