@@ -59,10 +59,7 @@ def setup_gpt_request(data, query):
     url="https://api.openai.com/v1/chat/completions"
     keys = ["id", "title"]
     filtered_data = [{key: item[key] for key in keys} for item in data]
-    filtered_data_json = json.dumps(filtered_data, ensure_ascii=False) 
-
-    with open("data.json", "w", encoding="utf-8") as file:
-        json.dump(filtered_data, file, ensure_ascii=False, indent=4)    
+    filtered_data_json = json.dumps(filtered_data, ensure_ascii=False)   
     
     header = {
         "Authorization": f"Bearer {key}",

@@ -63,8 +63,8 @@ def setup_gpt_ai_request(sections):
                 "  - Subject: '동물원' (general concept, not a specific zoo)\n"
                 "  - Result: [1] (AI-generated image)\n"
                 "\n"
-                "- '푸바오는 한국 최초의 자이언트 판다로, 많은 박람회와 행사에 참가할 예정입니다.'\n"
-                "  - Subject: '푸바오' (specific panda), but the focus is on participation in events (general idea)\n"
+                "- '푸바오를 통해 발견된 생명체의 생리학적, 행동적 특성은 환경 보호의 중요성을 일깨우고 있습니다.'\n"
+                "  - Subject: '푸바오' (specific panda), But it focuses on the importance of protecting the environment (General idea)\n"
                 "  - Result: [1] (AI-generated image)\n"
             )
         },
@@ -123,6 +123,11 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
                 "For the references, please include **all the articles that cover the key points** of the summary. However, if the same content appears in multiple articles, "
                 "please include only one of them in the references to avoid redundancy. "
                 "If there are multiple articles that together provide a comprehensive understanding of the story, include all the unique articles in the references, but exclude duplicates."
+                "Each section must be a standalone key point"
+                "Do NOT add anything that is not in the articles."
+                "Do NOT make up any details or speculate."
+                "Each section should be a standalone key point of the story, keeping it neutral and objective."
+                "Avoid mentioning the year or date"
             )
         },
         {
@@ -140,7 +145,8 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
                 f"Here is the data: {news}. Please ensure that the summary is accurate and factual, with clear reference URLs for each section. Avoid including duplicate articles."
             )
         }
-    ]
+    ], 
+    "temperature": 0.4
 }
 
     return url, header, request
