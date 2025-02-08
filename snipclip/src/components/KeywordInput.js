@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import '../index.css';
 import SubmitButton from "./SubmitButton";
+import { InputContainer } from "./Styles/Container/InputContainer.style";
 
 const KeywordInput = () => {
   const [keyword, setKeyword] = useState(""); // 키워드 상태 관리
@@ -15,22 +16,26 @@ const KeywordInput = () => {
   };
 
   return (
-    <div className="keyword-input-container">
-      <input
-        type="text"
-        placeholder="키워드를 입력하세요"
-        value={keyword}
-        onChange={handleInputChange}
-        style={{
-          padding: "10px",
-          width: "300px",
-          marginRight: "10px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-        }}
-      />
-      <SubmitButton />
-    </div>
+    <InputContainer>
+      <h2>최신 뉴스와 관련된 키워드를 입력하고, 요약 영상을 만들어보세요!</h2>
+      <div style={{ display: "flex", flexDirection: "row", border: "2px solid red" }}>
+        <input
+          type="text"
+          placeholder="키워드를 입력하세요"
+          value={keyword}
+          onChange={handleInputChange}
+          style={{
+            padding: "10px",
+            width: "80%",
+            marginRight: "10px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            position: "bottome-left"
+          }}
+        />
+        <SubmitButton />
+      </div>
+    </InputContainer>
   );
 };
 

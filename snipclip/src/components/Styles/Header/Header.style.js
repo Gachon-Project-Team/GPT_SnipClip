@@ -33,5 +33,5 @@ export const MainHeader = styled.div`
     margin: 0 auto;
     max-width: 1200px;
     background-color: transparent;
-    border: 2px solid red;
+    /* border: 2px solid red; */
 `
