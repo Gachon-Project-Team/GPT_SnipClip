@@ -14,4 +14,4 @@ def execute(query):
   with open("script.json", "w", encoding="utf-8") as json_file:
      json.dump(script, json_file, indent=4, ensure_ascii=False)
 
-execute("노벨상 수상") 
+execute("가천대") 
