@@ -1,7 +1,6 @@
 import React from 'react'
 import { Container } from '../components/Styles/Container/Container.style'
 import { Header, MainHeader } from '../components/Styles/Header/Header.style'
-import { Title } from '../components/Styles/Contents/Title.style'
 import KeywordInput from '../components/KeywordInput'
 
 

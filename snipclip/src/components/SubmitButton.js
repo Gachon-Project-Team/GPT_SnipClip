@@ -1,34 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 
-function SubmitButton() {
+function SubmitButton({ onSubmit }) {
   const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    function simulateNetworkRequest() {
-      return new Promise(resolve => {
-        setTimeout(resolve, 2000);
-      });
-    }
-
-    if (isLoading) {
-      simulateNetworkRequest().then(() => {
-        setLoading(false);
-      });
-    }
-  }, [isLoading]);
-
-  const handleClick = () => setLoading(true);
-
+  
   return (
     <Button
       variant="outline-dark"
       disabled={isLoading}
-      onClick={!isLoading ? handleClick : null}
+      onClick={!isLoading ? () => onSubmit(setLoading) : null}
+      style={{ width: "20%" }}
     >
       {isLoading ? '동영상 생성 중' : '만들기'}
     </Button>
   );
+  
 }
-
 export default SubmitButton;

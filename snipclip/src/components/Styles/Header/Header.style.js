@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 export const Header = styled.section`
@@ -23,7 +22,7 @@ export const Header = styled.section`
         transform: scaleX(1.5);
         background-position: right top;
         background-size: 100vw 200px;
-        background-color: #282c34;
+        background-color: #3C404B;
     }
 `
 
@@ -31,7 +30,19 @@ export const MainHeader = styled.div`
     position: relative;
     z-index: 1;
     margin: 0 auto;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1000px;
     background-color: transparent;
     /* border: 2px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
 `

@@ -7,7 +7,12 @@ function NavBarElements() {
   return (
     <Navbar collapseOnSelect expand="lg" className="bg-body-secondary" fixed='top'>
       <Container>
-        <Navbar.Brand href="/">SnipClip</Navbar.Brand>
+        <Navbar.Brand href="/">
+          <img
+            src="/SnipClip-logo.png"
+            alt="SnipClip Logo"
+            style={{ height: '50px'}}
+          /></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
