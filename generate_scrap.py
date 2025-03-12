@@ -69,28 +69,24 @@ def setup_gpt_request(data, query):
     request = {
         "model": "gpt-4o-mini",
         "messages": [
-            {
-                "role": "system",
-                "content": "You are an advanced news classifier and content curator."
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"The data contains news articles title scraped using the query '{query}'. "
-                    "Your task is to categorize the articles into coherent groups based on their topics, themes, or overall context, ensuring that each group could represent a single short-form video. "
-                    "Strictly exclude any articles that are irrelevant to the query or unrelated to the main keywords. "
-                    "Prioritize grouping articles with highly similar topics, key figures, events, or narratives together, avoiding broad or loosely connected categorizations. "
-                    "Focus on maintaining the strongest thematic coherence within each group. "
-                    "Return the result in strict JSON format, following this structure: {\"category_num (ex:category_1)\": [news_id, ...]} "
-                    "Classify them into at least three categories."
-                    "Do not include any articles that are only tangentially related to the query or contain overly generalized or unrelated content. "
-                    "Ensure that the classification is fine-grained and avoids overly broad categories. "
-                    "Do not include any extra text, Strictly return JSON"
-                    f"Here is the data: {filtered_data_json}"
-                )
-            }
-        ]
+    {
+        "role": "system",
+        "content": "You are an advanced news classifier and content curator."
+    },
+    {
+        "role": "user",
+        "content": (
+            f"The dataset contains 100 news article titles scraped using the query '{query}'. "
+            "Your task is to group these titles into at least three distinct categories with minimal overlap. "
+            "Ensure that each category represents a unique theme suitable for a short-form video. "
+            "If two or more groups share highly similar topics, merge them into one category. "
+            f"Exclude any titles that are irrelevant or only tangentially related to the {query} "
+            "Return your answer strictly in JSON format with the following structure: {\"category_name1\": [news_id, ...], \"category_name2\": [news_id, ...]}"
+            f"Here is the data: {filtered_data_json}"
+        )
     }
+]
+}
     
     return url, header, request
 

@@ -198,7 +198,6 @@ def merge_script_image(script, image):
             "category": item["category"],
             "title": item["title"],
             "section": item["sections"],
-            "reference": item["references"],
             "image": image_mapping.get(item["category"], None) 
             }
         result.append(merged_item)

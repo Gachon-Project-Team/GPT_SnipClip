@@ -123,36 +123,25 @@ def setup_gpt_request(category, news, query): #키워드 쿼리, news가 catecor
         {
             "role": "system",
             "content": (
-                "Your task is to summarize a news story accurately and concisely, preserving the facts while highlighting the key points."
-                "The summary should be in a conversational tone, written in Korean, and designed to be easily understood when spoken aloud."
-                "Ensure the summary includes only the most important information and avoid exaggeration or distortion of facts."
-                "The summary must be divided into 10 distinct sections, each presenting a clear and standalone key point of the story."
-                "Return exactly 10 sections, with each section containing only **1 or 2 sentences** and no more than **30 tokens**."
-                "Do NOT add any information that is not in the articles."
-                "Do NOT make up any details or speculate."
-                "Do NOT mention the year or date in any section."
+                "Your task is to create a 50-second script of video news by summarizing the given articles."
+                "The script should be divided into a total of 10 sections, each of which should be followed naturally when combined."
+                "The script must be written in korean and All terminating endings must be in the formality. ex. -합니다. -습니다."
+                "Ensure the script includes only the most important information and do not exaggeration or distortion of facts."
+                "Do NOT add any information that is not in the articles and Do NOT mention the year or date in any section"
                 "Keep the summary neutral and objective, avoiding personal opinions or interpretations."
                 "Use specific names for people, animals, countries, and institutions as they appear in the articles."
-                "For references, include all relevant articles covering unique key points of the story."
-                "If multiple articles contain the same information, include only one to avoid redundancy."
-                "If multiple articles provide unique insights, include all necessary references."
-                "Each section must be independent and easily understood on its own, without requiring context from other sections."
-                "Each section should fit naturally, even when all that has been put together."
+                "It's 2025 now, please remember this moment and write the script"
             )
         },
         {
             "role": "user",
             "content": (
-                f"Summarize the news articles related to the keyword '{query}' into a 50-second voice presentation script, ensuring accuracy and clarity. "
+                f"Write the news script that related to the keyword '{query}'"
                 "The summary should focus on the key facts of the story, maintaining an unbiased and factual tone. "
-                "Please make sure to break the summary into exactly 10 sections, each clearly summarizing one point of the story. "
-                "Each section must be based on factual information, and for each section, provide the reference URLs that support the information in that section. "
-                "For the references, include **all the articles that cover the key points of the story**. However, if identical information appears in multiple articles, include only one of them to avoid repetition. "
-                "If there are multiple articles that together cover all the important points, include all the unique articles in the reference list. "
                 "The following format should be used for the output:\n\n"
                 f"category should be equal to {category}. Do not edit.\n"
-                "{\n  \"category\": \"{category}\",\n  \"title\": \"{title}\",\n  \"sections\": [\"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\"],\n  \"references\": [\"\", \"\", \"\"]\n}\n\n"
-                f"Here is the data: {news}. Please ensure that the summary is accurate and factual, with clear reference URLs for each section. Avoid including duplicate articles."
+                "{\n  \"category\": \"{category}\",\n  \"title\": \"{title}\",\n  \"sections\": [\"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\"]}"
+                f"Here is the data: {news}"
             )
         }
     ], 
