@@ -5,8 +5,6 @@ import generate_script
 import generate_image
 import flux
 import json
-from typing import Dict, List
-import logging
 
 app = FastAPI()
 
@@ -22,7 +20,7 @@ class NewsItem(BaseModel):
     url: str
 
 class ScriptRequest(BaseModel):
-    data: Dict[str, List[NewsItem]]  # 동적으로 키 이름을 처리
+    news: list[NewsItem]  # scrap.json의 구조와 동일하게 정의
     query: str
 
 class ImageRequest(BaseModel):
@@ -42,28 +40,10 @@ async def scrap_news(request: QueryRequest):
 
 @app.post("/script")
 async def generate_script_api(request: ScriptRequest):
-    logger = logging.getLogger("app_logger")
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
     try:
-        # 요청 데이터 로깅
-
-        logger.info(f"Received /script request: {request}")
-
-        # 각 키와 값 처리
-        results = {}
-        for key, news_list in request.data.items():
-            logger.info(f"Processing key: {key} with {len(news_list)} items")
-            results[key] = generate_script.generate_script(news_list, request.query)
-
-        # 결과 반환
-        return {"message": "Scripts generated successfully", "results": results}
+        result = generate_script.generate_script(request.news, request.query)
+        return result
     except Exception as e:
-        logger.error(f"Error in /script: {e}")
         raise HTTPException(status_code=500, detail=f"Error generating script: {e}")
 
 @app.post("/image")
