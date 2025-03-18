@@ -35,7 +35,7 @@ class FluxRequest(BaseModel):
 async def scrap_news(request: QueryRequest):
     try:
         result = generate_scrap.news_scraper(request.query)
-        return result
+        return {"news": result, "query": request.query}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error scraping news: {e}")
 
