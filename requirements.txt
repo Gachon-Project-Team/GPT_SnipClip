@@ -29,3 +29,5 @@ numpy
 
 lxml
 lxml_html_clean
+
+ipython
