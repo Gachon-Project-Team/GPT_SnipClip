@@ -1,28 +1,28 @@
 # FastAPI 및 관련 라이브러리
-fastapi==0.100.0
-uvicorn==0.23.0
+fastapi
+uvicorn
 
 # HTTP 요청 처리
-requests==2.31.0
+requests
 
 # OpenAI API
-openai==0.27.8
+openai
 
 # Newspaper3k (뉴스 스크래핑)
-newspaper3k==0.2.8
+newspaper3k
 
 # PyTorch 및 관련 라이브러리
-torch==2.0.1
-diffusers==0.20.2
+torch
+diffusers
 
 # Transformers (CLIP 모델)
-transformers==4.33.3
+transformers
 
 # PIL (이미지 처리)
-pillow==10.0.1
+pillow
 
 # piq (SSIM 계산)
-piq==0.7.0
+piq
 
 # 기타 유틸리티
-numpy==1.25.2
+numpy
