@@ -5,6 +5,7 @@ import generate_script
 import generate_image
 import flux
 import json
+from typing import Dict, List
 
 app = FastAPI()
 
@@ -20,7 +21,7 @@ class NewsItem(BaseModel):
     url: str
 
 class ScriptRequest(BaseModel):
-    news: list[NewsItem]  # scrap.json의 구조와 동일하게 정의
+    news: Dict[str, List[NewsItem]]  # 동적으로 키 이름을 처리
     query: str
 
 class ImageRequest(BaseModel):
@@ -41,8 +42,11 @@ async def scrap_news(request: QueryRequest):
 @app.post("/script")
 async def generate_script_api(request: ScriptRequest):
     try:
-        result = generate_script.generate_script(request.news, request.query)
-        return result
+        results = {}
+        for key, news_list in request.news.items():
+            results[key] = generate_script.generate_script(news_list, request.query)
+
+        return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating script: {e}")
 
