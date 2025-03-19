@@ -48,7 +48,12 @@ async def generate_script_api(request: ScriptRequest):
 
         results = {}
         for key, news_list in request.news.items():
-            results[key] = generate_script.generate_script(news_list, request.query)
+            # news_list를 dict로 변환
+            news_dict = {f"item_{i+1}": news_item.dict() for i, news_item in enumerate(news_list)}
+            print(f"Converted news_list for key '{key}': {news_dict}")
+
+            # generate_script.generate_script 호출
+            results[key] = generate_script.generate_script(news_dict, request.query)
 
         return results
     except Exception as e:
