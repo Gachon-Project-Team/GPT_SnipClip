@@ -42,6 +42,10 @@ async def scrap_news(request: QueryRequest):
 @app.post("/script")
 async def generate_script_api(request: ScriptRequest):
     try:
+        # 요청 데이터 디버깅
+        print(f"Type of request.news: {type(request.news)}")
+        print(f"Content of request.news: {request.news}")
+
         results = {}
         for key, news_list in request.news.items():
             results[key] = generate_script.generate_script(news_list, request.query)
