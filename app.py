@@ -46,14 +46,15 @@ async def generate_script_api(request: ScriptRequest):
         print(f"Type of request.news: {type(request.news)}")
         print(f"Content of request.news: {request.news}")
 
-        results = {}
+        # generate_script 함수에 전달할 데이터 준비
+        formatted_news = {}
         for key, news_list in request.news.items():
-            # news_list를 dict로 변환
-            news_dict = {f"item_{i+1}": news_item.dict() for i, news_item in enumerate(news_list)}
-            print(f"Converted news_list for key '{key}': {news_dict}")
+            formatted_news[key] = [news_item.dict() for news_item in news_list]
 
-            # generate_script.generate_script 호출
-            results[key] = generate_script.generate_script(news_dict, request.query)
+        print(f"Formatted news: {formatted_news}")
+
+        # generate_script 호출
+        results = generate_script.generate_script(formatted_news, request.query)
 
         return results
     except Exception as e:
