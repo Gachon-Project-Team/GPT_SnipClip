@@ -1,13 +1,20 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, Form
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from typing import Dict, List
 import generate_scrap
 import generate_script
 import generate_image
+import generate_video
 import flux
 import json
-from typing import Dict, List
+import os
 
 app = FastAPI()
+
+# 정적 파일 제공 설정
+app.mount("/videos", StaticFiles(directory="temp_storage"), name="videos")
 
 # 요청 데이터 모델 정의
 class QueryRequest(BaseModel):
@@ -102,3 +109,36 @@ async def execute_pipeline(request: QueryRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error executing pipeline: {e}")
+
+@app.post("/video")
+async def generate_video_api(
+    images: List[UploadFile],  # 이미지 파일 리스트
+    captions: List[str] = Form(...)  # 캡션 리스트
+):
+    """
+    API to generate a video from images and captions.
+    """
+    try:
+        # 입력 유효성 검사
+        if len(images) != len(captions):
+            raise HTTPException(
+                status_code=400,
+                detail="Number of images and captions must match"
+            )
+
+        # process_files 호출
+        output_filename = await generate_video.process_files(images, captions)
+
+        # 비디오 파일 경로 생성
+        video_url = f"/videos/{output_filename}"
+
+        # 결과 반환
+        return JSONResponse(
+            content={
+                "message": "Video generated successfully",
+                "video_url": video_url
+            },
+            status_code=200
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating video: {e}")
