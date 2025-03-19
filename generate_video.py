@@ -110,7 +110,7 @@ def process_all_images_in_folder(folder_path):
 TEMP_DIR_BASE = Path(os.getcwd()) / "temp_storage"
 TEMP_DIR_BASE.mkdir(exist_ok=True)
 
-def get_audio_duration(file_path: str) -> float:
+async def get_audio_duration(file_path: str) -> float:
     """Get audio file duration using ffprobe"""
     cmd = [
         'ffprobe',
@@ -122,6 +122,7 @@ def get_audio_duration(file_path: str) -> float:
     
     print(f"\n[FFprobe] Executing command: {' '.join(cmd)}")
     
+    # 비동기 서브프로세스 실행
     process = await asyncio.create_subprocess_exec(
         *cmd,
         stdout=asyncio.subprocess.PIPE,
@@ -179,7 +180,6 @@ async def process_files(images_file: list, images_caption: list) -> str:
                 f.write(content)
             original_image_paths.append(image_path)
 
-
         except Exception as e:
             print(f"Error processing file {file.filename}: {str(e)}")  # 에러 로그
             raise
@@ -204,7 +204,7 @@ async def process_files(images_file: list, images_caption: list) -> str:
         )
 
         response.stream_to_file(str(audio_path))
-        duration = get_audio_duration(str(audio_path))
+        duration = await get_audio_duration(str(audio_path))
         print(f"duration: {duration}")
         audio_paths.append(audio_path)
         audio_durations.append(duration)
