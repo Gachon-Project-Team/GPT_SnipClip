@@ -15,6 +15,7 @@ app = FastAPI()
 
 # 정적 파일 제공 설정
 app.mount("/videos", StaticFiles(directory="temp_storage"), name="videos")
+app.mount("/generated_images", StaticFiles(directory="generated_images"), name="generated_images")
 
 # 요청 데이터 모델 정의
 class QueryRequest(BaseModel):
@@ -28,7 +29,7 @@ class NewsItem(BaseModel):
     url: str
 
 class ScriptRequest(BaseModel):
-    news: Dict[str, List[NewsItem]]  # 동적으로 키 이름을 처리
+    news: Dict[str, List<NewsItem]]  # 동적으로 키 이름을 처리
     query: str
 
 class ImageRequest(BaseModel):
@@ -37,6 +38,11 @@ class ImageRequest(BaseModel):
 
 class FluxRequest(BaseModel):
     prompt: str
+    client_ip: str = "127.0.0.1"
+    width: int = 1280
+    height: int = 720
+    guidance_scale: float = 0.5
+    num_inference_steps: int = 100
 
 @app.post("/scrap")
 async def scrap_news(request: QueryRequest):
@@ -77,9 +83,24 @@ async def generate_image_api(request: ImageRequest):
 
 @app.post("/flux")
 async def generate_flux_image(request: FluxRequest):
+    """
+    Generates an image using the flux.execute_flux function.
+    """
     try:
-        result = flux.execute_flux(request.prompt)
-        return {"image_url": result}
+        # flux.execute_flux 호출
+        image_url = flux.execute_flux(
+            prompt=request.prompt,
+            client_ip=request.client_ip,
+            width=request.width,
+            height=request.height,
+            guidance_scale=request.guidance_scale,
+            num_inference_steps=request.num_inference_steps
+        )
+
+        if not image_url:
+            raise HTTPException(status_code=500, detail="Failed to generate image")
+
+        return image_url
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating flux image: {e}")
 

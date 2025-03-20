@@ -1,48 +1,72 @@
 import os
-import torch
-from diffusers import FluxPipeline
+import datetime
+import asyncio
+import paramiko
 import api_key
 import json
 import requests
+import subprocess
 
-# FLUX.1 파이프라인 설정 함수
-def set_up_flux():
-    pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-schnell", torch_dtype=torch.bfloat16)
-    pipe.enable_model_cpu_offload()
-    return pipe
-
-# FLUX.1 이미지 생성 함수
-def execute_flux(prompt):
-    pipe = set_up_flux()
-
+# FLUX.1 이미지 생성 함수 - AI 서버에 접속
+def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720. guidance_scale=0.5, num_inference_steps=100):
     try:
-        # 생성할 이미지 파일 경로
-        folder_path = "generate_image"
-        os.makedirs(folder_path, exist_ok=True)  # 폴더가 없으면 생성
-        
-        # 이미지를 생성
-        image = pipe(
-            prompt,
-            height=512,
-            width=512,
-            guidance_scale=7.5,
-            num_inference_steps=25,
-            generator=torch.Generator("cpu").manual_seed(0)
-        ).images[0]
+        CONDA_ENV_NAME = api_key.get_CONDA_ENV_NAME()
+        GENERATE_SCRIPT = api_key.get_GENERATE_SCRIPT()
+        SSH_HOST = api_key.get_SSH_HOST()
+        SSH_PORT = api_key.get_SSH_PORT()
+        SSH_USERNAME = api_key.get_SSH_USERNAME()
+        SSH_PASSWORD = api_key.get_SSH_PASSWORD()
+        OUTPUT_DIR = api_key.get_OUTPUT_DIR()
+        LOCAL_SAVE_DIR = api_key.get_LOCAL_SAVE_DIR()
 
-        # 파일명 생성
-        filename = f"{hash(prompt)}.png"
-        image_path = os.path.join(folder_path, filename)  # 폴더 경로와 파일명 결합
-        image.save(image_path)
+        api_key.get_gpt_key()
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        sanitized_ip = client_ip.replace(".", "-")  # IP 주소에서 dot을 하이픈으로 변경
+        output_filename = f"{timestamp}_{sanitized_ip}.png"
 
-        # URL 반환 (로컬 파일 경로)
-        image_url = f"file://{image_path}"
+        # 실행할 명령어 (로컬 실행)
+        command = f'source /home/jhlee/anaconda3/bin/activate {CONDA_ENV_NAME} && '
+        command += f'python3 {GENERATE_SCRIPT} --prompt "{prompt}" --guidance_scale {guidance_scale} '
+        command += f'--num_inference_steps {num_inference_steps} --width {width} --height {height} '
+        command += f'--output {os.path.join(OUTPUT_DIR, output_filename)}'
+
+        print(f"Executing remote command via subprocess: {command}")
+
+        # subprocess를 사용하여 명령어 실행 및 실시간 출력 처리
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+            text=True,
+            bufsize=1
+        )
+        process.wait()
+        if process.returncode != 0:
+            error_output = process.stderr.read()
+            print(f"Process failed: {error_output}")
+
+        print("Attempting to retrieve the latest generated image via SFTP...")
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(SSH_HOST, port=SSH_PORT, username=SSH_USERNAME, password=SSH_PASSWORD)
+        print("SSH connection established successfully.")
+        sftp = ssh.open_sftp()
+        remote_file_path = os.path.join(OUTPUT_DIR, output_filename)
+        local_path = os.path.join(LOCAL_SAVE_DIR, output_filename)
+        os.makedirs(LOCAL_SAVE_DIR, exist_ok=True)
+        try:
+            sftp.get(remote_file_path, local_path)
+            print(f"Successfully downloaded: {output_filename}")
+        except FileNotFoundError:
+            print(f"Generated image not found: {remote_file_path}")
+
+        print(f"Processing complete. Image available at /generated_images/{output_filename}")
+        image_url = '/generated_images/' + output_filename
 
     except Exception as e:
         print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
         image_url = None
-
-    torch.cuda.empty_cache()
 
     return image_url
 
