@@ -33,3 +33,5 @@ lxml_html_clean
 ipython
 
 python-multipart
+
+paramiko
