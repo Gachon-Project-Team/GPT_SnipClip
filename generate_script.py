@@ -61,20 +61,6 @@ def setup_gpt_ai_request(sections):
                 "Result: Real image (0), because the text refers to 2025 GCSC held at Gachon University, and using an actual photo of the university better matches the context rather than an AI-generated image."
                 "문장: 가천대학교는 글로벌 인재 양성을 목표로 다양한 해외 연수 프로그램을 운영하고 있습니다. 대학 측은 지속 가능한 발전을 위해 환경 친화적인 캠퍼스를 조성할 계획입니다."
                 "Result: AI-generated image (1), because the text discusses future-oriented programs such as study abroad and eco-friendly campus development, making an AI-generated image more suitable."
-                "문장: 앰브로스는 생명과학 분야의 선구자로 평가받고 있으며, 그의 연구는 여러 생명체의 유전자 조절 메커니즘을 이해하는 데 기여했다. 특히, 마이크로RNA는 유전자 발현 조절에 중요한 역할을 하며, 질병 연구에도 활용되고 있다."
-                "Result: Real image (0), because Ambros is a specific individual, and using a real image of him is more appropriate for this context."
-                "문장: 노벨 평화상 후보로는 환경 문제에 기여한 인사들이 거론되고 있습니다. 노벨 문학상은 특히 문학계의 새로운 목소리를 가진 작가에게 돌아갈 가능성이 높습니다."
-                "Result: AI-generated image (1), because no specific individuals are mentioned, making it difficult to find a suitable real image. Therefore, an AI-generated image would be more appropriate."
-                "문장: 전문가들은 이러한 결과가 과학계에 미치는 영향을 분석 중입니다. 향후 노벨상 제도의 공정성과 신뢰성을 회복하기 위한 논의가 필요할 것으로 보입니다."
-                "Result: AI-generated image (1), because the content is abstract, making it difficult to find a suitable real photo. An AI-generated image would be more appropriate."
-                "문장: 탄핵 관련 법적 절차와 기준에 대한 논의도 함께 이루어지고 있습니다. 국회 내에서의 협상과 여론의 변화가 탄핵 여부에 큰 영향을 미칠 것으로 보입니다."
-                "Result: Real image (0), because the discussion about impeachment within the National Assembly makes an actual photo of the assembly more appropriate. Given the factual importance of the political content, an AI-generated image should not be used."
-                "문장: 최근 탄핵 관련 논의가 활발해지고 있습니다. 정치권에서는 탄핵 절차에 대한 다양한 의견이 나오고 있습니다. 한 정치인은 탄핵이 필요하다고 주장하며, 정치적 책임을 강조했습니다."
-                "Result: AI-generated image (1), because the phrase 'a politician' is vague, making it difficult to match with a real image. An AI-generated image is more appropriate."
-                "문장: 여론조사 결과는 향후 정치적 결정에 큰 영향을 미칠 것으로 예상됩니다. 탄핵에 대한 논의는 국회에서도 활발히 이루어지고 있으며, 여러 정당이 입장을 내놓고 있습니다."
-                "Result: Real image (0), because this text discusses factual political events. A real image of the National Assembly would be more appropriate."
-                "문장: 탄핵 절차가 진행될 경우, 정치적 파장이 클 것으로 예상되고 있습니다. 일부 정치인은 탄핵이 정치적 목적을 위한 것이라고 비판하고 있습니다."
-                "Result: AI-generated image (1), because 'some politicians' is a vague reference, making it difficult to match with a real image. An AI-generated image would be more suitable."
             )
         },
         {
