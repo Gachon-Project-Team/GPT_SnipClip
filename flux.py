@@ -16,7 +16,7 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         SSH_PORT = api_key.get_SSH_PORT()
         SSH_USERNAME = api_key.get_SSH_USERNAME()
         SSH_PASSWORD = api_key.get_SSH_PASSWORD()
-        OUTPUT_DIR = api_key.get_OUTPUT_DIR()
+        OUTPUT_DIR = api_key.get_OUTPUT_DIR().replace("\"", "").replace("'", "")
         LOCAL_SAVE_DIR = api_key.get_LOCAL_SAVE_DIR()
 
         api_key.get_gpt_key()
@@ -28,7 +28,7 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         command = f'source /home/jhlee/anaconda3/bin/activate {CONDA_ENV_NAME} && '
         command += f'python3 {GENERATE_SCRIPT} --prompt "{prompt}" --guidance_scale {guidance_scale} '
         command += f'--num_inference_steps {num_inference_steps} --width {width} --height {height} '
-        command += f'--output {os.path.join(OUTPUT_DIR.replace('"', '').replace("'", ''), output_filename)}'
+        command += f'--output {os.path.join(OUTPUT_DIR, output_filename)}'
 
         print(f"Executing remote command via subprocess: {command}")
 
