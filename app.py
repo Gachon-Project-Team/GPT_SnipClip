@@ -29,7 +29,7 @@ class NewsItem(BaseModel):
     url: str
 
 class ScriptRequest(BaseModel):
-    news: Dict[str, List<NewsItem]]  # 동적으로 키 이름을 처리
+    news: Dict[str, List[NewsItem]]  # 동적으로 키 이름을 처리
     query: str
 
 class ImageRequest(BaseModel):
