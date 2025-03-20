@@ -10,6 +10,7 @@ import subprocess
 # FLUX.1 이미지 생성 함수 - AI 서버에 접속
 def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
     try:
+        # 환경 변수 및 설정 가져오기
         CONDA_ENV_NAME = api_key.get_CONDA_ENV_NAME()
         GENERATE_SCRIPT = api_key.get_GENERATE_SCRIPT()
         SSH_HOST = api_key.get_SSH_HOST()
@@ -19,38 +20,40 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         OUTPUT_DIR = api_key.get_OUTPUT_DIR().replace("\"", "").replace("'", "")
         LOCAL_SAVE_DIR = api_key.get_LOCAL_SAVE_DIR()
 
-        api_key.get_gpt_key()
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         sanitized_ip = client_ip.replace(".", "-")  # IP 주소에서 dot을 하이픈으로 변경
         output_filename = f"{timestamp}_{sanitized_ip}.png"
 
-        # 실행할 명령어 (로컬 실행)
-        command = f'source /home/jhlee/anaconda3/bin/activate {CONDA_ENV_NAME} && '
+        # 실행할 명령어
+        command = f'source /home/{SSH_USERNAME}/anaconda3/bin/activate {CONDA_ENV_NAME} && '
         command += f'python3 {GENERATE_SCRIPT} --prompt "{prompt}" --guidance_scale {guidance_scale} '
         command += f'--num_inference_steps {num_inference_steps} --width {width} --height {height} '
         command += f'--output {os.path.join(OUTPUT_DIR, output_filename)}'
 
-        print(f"Executing remote command via subprocess: {command}")
+        print(f"Executing remote command via SSH: {command}")
 
-        # subprocess를 사용하여 명령어 실행 및 실시간 출력 처리
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True,
-            text=True,
-            bufsize=1
-        )
-        process.wait()
-        if process.returncode != 0:
-            error_output = process.stderr.read()
-            print(f"Process failed: {error_output}")
-
-        print("Attempting to retrieve the latest generated image via SFTP...")
+        # SSH 연결 설정
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(SSH_HOST, port=SSH_PORT, username=SSH_USERNAME, password=SSH_PASSWORD)
         print("SSH connection established successfully.")
+
+        # 원격 명령어 실행
+        stdin, stdout, stderr = ssh.exec_command(command)
+        stdout_output = stdout.read().decode('utf-8')
+        stderr_output = stderr.read().decode('utf-8')
+
+        # 명령어 실행 결과 출력
+        if stdout_output:
+            print(f"STDOUT: {stdout_output}")
+        if stderr_output:
+            print(f"STDERR: {stderr_output}")
+
+        if stderr_output:
+            raise Exception(f"Command execution failed: {stderr_output}")
+
+        # SFTP를 사용하여 생성된 파일 다운로드
+        print("Attempting to retrieve the latest generated image via SFTP...")
         sftp = ssh.open_sftp()
         remote_file_path = os.path.join(OUTPUT_DIR, output_filename)
         local_path = os.path.join(LOCAL_SAVE_DIR, output_filename)
@@ -60,6 +63,7 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
             print(f"Successfully downloaded: {output_filename}")
         except FileNotFoundError:
             print(f"Generated image not found: {remote_file_path}")
+            raise FileNotFoundError(f"Generated image not found: {remote_file_path}")
 
         print(f"Processing complete. Image available at /generated_images/{output_filename}")
         image_url = '/generated_images/' + output_filename
@@ -67,6 +71,11 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
     except Exception as e:
         print(f"* generate_image / execute_Flux * Error generating image for prompt '{prompt}': {e}")
         image_url = None
+
+    finally:
+        # SSH 연결 종료
+        if 'ssh' in locals():
+            ssh.close()
 
     return image_url
 
