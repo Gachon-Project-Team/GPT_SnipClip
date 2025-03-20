@@ -25,10 +25,10 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         output_filename = f"{timestamp}_{sanitized_ip}.png"
 
         # 실행할 명령어 (로컬 실행)
-        command = f'bash -c "source /home/jhlee/anaconda3/bin/activate {CONDA_ENV_NAME} && '
+        command = f'source /home/jhlee/anaconda3/bin/activate {CONDA_ENV_NAME} && '
         command += f'python3 {GENERATE_SCRIPT} --prompt "{prompt}" --guidance_scale {guidance_scale} '
         command += f'--num_inference_steps {num_inference_steps} --width {width} --height {height} '
-        command += f'--output {os.path.join(OUTPUT_DIR, output_filename)} "'
+        command += f'--output {os.path.join(OUTPUT_DIR.replace('"', '').replace("'", ''), output_filename)}'
 
         print(f"Executing remote command via subprocess: {command}")
 
