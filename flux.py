@@ -8,7 +8,7 @@ import requests
 import subprocess
 
 # FLUX.1 이미지 생성 함수 - AI 서버에 접속
-def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720. guidance_scale=0.5, num_inference_steps=100):
+def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
     try:
         CONDA_ENV_NAME = api_key.get_CONDA_ENV_NAME()
         GENERATE_SCRIPT = api_key.get_GENERATE_SCRIPT()
