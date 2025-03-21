@@ -39,18 +39,26 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         print("SSH connection established successfully.")
 
         # 원격 명령어 실행
-        stdin, stdout, stderr = ssh.exec_command(command)
-        stdout_output = stdout.read().decode('utf-8')
-        stderr_output = stderr.read().decode('utf-8')
+        transport = ssh.get_transport()
+        channel = transport.open_session()
+        channel.exec_command(command)
 
-        # 명령어 실행 결과 출력
-        if stdout_output:
-            print(f"STDOUT: {stdout_output}")
-        if stderr_output:
-            print(f"STDERR: {stderr_output}")
+        # 실시간 출력 읽기
+        print("Command execution started. Streaming output:")
+        while True:
+            if channel.recv_ready():
+                stdout_line = channel.recv(1024).decode('utf-8')
+                print(stdout_line, end="")  # 실시간 출력
+            if channel.recv_stderr_ready():
+                stderr_line = channel.recv_stderr(1024).decode('utf-8')
+                print(stderr_line, end="")  # 실시간 에러 출력
+            if channel.exit_status_ready():
+                break
 
-        if stderr_output:
-            raise Exception(f"Command execution failed: {stderr_output}")
+        # 명령어 종료 상태 확인
+        exit_status = channel.recv_exit_status()
+        if exit_status != 0:
+            raise Exception(f"Command execution failed with exit status {exit_status}")
 
         # SFTP를 사용하여 생성된 파일 다운로드
         print("Attempting to retrieve the latest generated image via SFTP...")
