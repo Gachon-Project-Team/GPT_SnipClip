@@ -18,7 +18,7 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         SSH_USERNAME = api_key.get_SSH_USERNAME()
         SSH_PASSWORD = api_key.get_SSH_PASSWORD()
         OUTPUT_DIR = api_key.get_OUTPUT_DIR().replace("\"", "").replace("'", "")
-        LOCAL_SAVE_DIR = api_key.get_LOCAL_SAVE_DIR()
+        LOCAL_SAVE_DIR = api_key.get_LOCAL_SAVE_DIR().replace("\"", "").replace("'", "")
 
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         sanitized_ip = client_ip.replace(".", "-")  # IP 주소에서 dot을 하이픈으로 변경
