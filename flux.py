@@ -57,8 +57,6 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
 
         # 명령어 종료 상태 확인
         exit_status = channel.recv_exit_status()
-        if exit_status != 0:
-            raise Exception(f"Command execution failed with exit status {exit_status}")
 
         # SFTP를 사용하여 생성된 파일 다운로드
         print("Attempting to retrieve the latest generated image via SFTP...")
