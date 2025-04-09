@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 import PIL
 from openai import OpenAI
+from gtts import gTTS 
 import shutil
 import json
 import asyncio
@@ -197,13 +198,16 @@ async def process_files(images_file: list, images_caption: list) -> str:
     for i, caption in enumerate(images_caption):
         audio_path = temp_dir / f"audio_{i}.mp3"
         print(f"audio_path: {audio_path}")
-        response = client.audio.speech.create(
-            model="tts-1",
-            voice="alloy",
-            input=caption
-        )
+        # response = client.audio.speech.create(
+        #     model="tts-1",
+        #     voice="alloy",
+        #     input=caption
+        # )
 
-        response.stream_to_file(str(audio_path))
+        # response.stream_to_file(str(audio_path))
+        tts = gTTS(text=caption, lang='ko', slow=False)
+        tts.save(str(audio_path))
+
         duration = await get_audio_duration(str(audio_path))
         print(f"duration: {duration}")
         audio_paths.append(audio_path)

@@ -35,3 +35,5 @@ ipython
 python-multipart
 
 paramiko
+
+gTTS
