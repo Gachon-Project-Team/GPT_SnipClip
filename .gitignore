@@ -21,3 +21,5 @@ api_key.py
 # IDE 설정
 .vscode/
 *.code-workspace
+
+api_key.py
