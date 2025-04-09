@@ -1,0 +1,38 @@
+# FastAPI 및 관련 라이브러리
+fastapi
+uvicorn
+
+# HTTP 요청 처리
+requests
+
+# OpenAI API
+openai
+
+# Newspaper3k (뉴스 스크래핑)
+newspaper3k
+
+# PyTorch 및 관련 라이브러리
+torch
+diffusers
+
+# Transformers (CLIP 모델)
+transformers
+
+# PIL (이미지 처리)
+pillow
+
+# piq (SSIM 계산)
+piq
+
+# 기타 유틸리티
+numpy
+
+lxml
+lxml_html_clean
+
+ipython
+
+python-multipart
+
+paramiko
+
