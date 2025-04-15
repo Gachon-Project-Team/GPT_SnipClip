@@ -16,7 +16,6 @@ app = FastAPI()
 # 정적 파일 제공 설정
 app.mount("/videos", StaticFiles(directory="temp_storage"), name="videos")
 app.mount("/generated_images", StaticFiles(directory="generated_images"), name="generated_images")
-app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 # 요청 데이터 모델 정의
 class QueryRequest(BaseModel):
@@ -164,3 +163,5 @@ async def generate_video_api(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating video: {e}")
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
