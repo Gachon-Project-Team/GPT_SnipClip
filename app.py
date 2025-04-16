@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Dict, List
+from utils.save_json import save_json_result
 import generate_scrap
 import generate_script
 import generate_image
@@ -15,11 +16,15 @@ app = FastAPI()
 
 # 정적 파일 제공 설정
 app.mount("/videos", StaticFiles(directory="temp_storage"), name="videos")
-app.mount("/generated_images", StaticFiles(directory="generated_images"), name="generated_images")
+app.mount("/generated_images",
+          StaticFiles(directory="generated_images"), name="generated_images")
 
 # 요청 데이터 모델 정의
+
+
 class QueryRequest(BaseModel):
     query: str
+
 
 class NewsItem(BaseModel):
     id: int
@@ -28,13 +33,16 @@ class NewsItem(BaseModel):
     image: str
     url: str
 
+
 class ScriptRequest(BaseModel):
     news: Dict[str, List[NewsItem]]  # 동적으로 키 이름을 처리
     query: str
 
+
 class ImageRequest(BaseModel):
     script: list
     query: str
+
 
 class FluxRequest(BaseModel):
     prompt: str
@@ -44,13 +52,19 @@ class FluxRequest(BaseModel):
     guidance_scale: float = 0.5
     num_inference_steps: int = 100
 
+
 @app.post("/scrap")
 async def scrap_news(request: QueryRequest):
     try:
         result = generate_scrap.news_scraper(request.query)
+
+        save_json_result(result, request.query, "scrap")
+
         return {"news": result, "query": request.query}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error scraping news: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error scraping news: {e}")
+
 
 @app.post("/script")
 async def generate_script_api(request: ScriptRequest):
@@ -67,19 +81,29 @@ async def generate_script_api(request: ScriptRequest):
         print(f"Formatted news: {formatted_news}")
 
         # generate_script 호출
-        results = generate_script.generate_script(formatted_news, request.query)
+        results = generate_script.generate_script(
+            formatted_news, request.query)
+
+        save_json_result(results, request.query, "script")
 
         return results
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating script: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating script: {e}")
+
 
 @app.post("/image")
 async def generate_image_api(request: ImageRequest):
     try:
         result = generate_image.generate_image(request.script, request.query)
+
+        save_json_result(result, request.query, "image")
+
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating image: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating image: {e}")
+
 
 @app.post("/flux")
 async def generate_flux_image(request: FluxRequest):
@@ -98,11 +122,14 @@ async def generate_flux_image(request: FluxRequest):
         )
 
         if not image_url:
-            raise HTTPException(status_code=500, detail="Failed to generate image")
+            raise HTTPException(
+                status_code=500, detail="Failed to generate image")
 
         return image_url
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating flux image: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating flux image: {e}")
+
 
 @app.post("/execute")
 async def execute_pipeline(request: QueryRequest):
@@ -129,7 +156,9 @@ async def execute_pipeline(request: QueryRequest):
         return {"message": "Pipeline executed successfully", "result": result}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error executing pipeline: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error executing pipeline: {e}")
+
 
 @app.post("/video")
 async def generate_video_api(
@@ -162,6 +191,7 @@ async def generate_video_api(
             status_code=200
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating video: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating video: {e}")
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
