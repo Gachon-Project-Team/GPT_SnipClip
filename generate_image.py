@@ -107,7 +107,10 @@ def download_img(image): # image는[[url, ref url]] 형태
 
             # 유사하지 않거나 첫 이미지인 경우 저장
             existing_images.append(save_path)
-            successful_downloads.append(i)  # ["사진다운url", "출처뉴스url"] 형식 유지
+            image_data = i
+            image_data[0] = save_dir[2:] + '/' + file_name  # ["사진다운url", "출처뉴스url"] 형식 유지
+            # successful_downloads.append(['aa','bb'])  # ["사진다운url", "출처뉴스url"] 형식 유지
+            successful_downloads.append(image_data)  # ["사진다운url", "출처뉴스url"] 형식 유지
             logging.info(f"Saved successfully: {save_path}")
             idx += 1
         
@@ -229,14 +232,20 @@ def image_mat(category, query, image_list, image_val):
 
 #메인 함수 
 def generate_image(script, query): 
+    print('hello')
     image = scrap_image(script, query) #이미지 추가 스크랩 및 전체 이미지 하나의 리스트로 생성
+    print("image", image)
     image_list = download_img(image) #다운된 이미지들 목록 [[url, reference]] 형식
+    print("image_list", image_list)
     image_val = image_embedding() #이미지 전체 임베딩 값 리스트 
+    print("image_val", image_val)
     image_result=[] 
     for category in script: 
         category_result = image_mat(category, query, image_list, image_val) #한 카테고리에 대한 이미지 매칭 결과 {"category": "category_1, "image": [[url, ref]]} 형식
+        print("category_result", category_result)
         image_result.append(category_result) #모든 카테고리에 대한 결과를 한 리스트로 묶음
+        print("image_result", image_result)
 
     result = merge_script_image(script, image_result) #해당 이미지 매칭 파일을 카테고리별로 섹션, 타이틀 등과 매칭해서 최종 파일 생성
-
+    print("result", result)
     return result

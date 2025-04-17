@@ -3,6 +3,7 @@ import urllib.request
 from newspaper import Article
 import requests
 import api_key
+import ssl
 
 # 뉴스 스크랩 및 분류
 
@@ -14,10 +15,11 @@ def execute_scrap(query):
     data = [] #기사를 저장할 리스트, 딕셔너리 리스트 형태, key = id, title, content, image, url
     
     # naver 기사 api 링크 접속
+    context = ssl._create_unverified_context()
     request = urllib.request.Request(url)
     request.add_header("X-Naver-Client-Id", client_id)
     request.add_header("X-Naver-Client-Secret", client_secret)
-    response = urllib.request.urlopen(request)
+    response = urllib.request.urlopen(request, context=context)
     rescode = response.getcode()
     
     #네이버 뉴스 접속 성공시 뉴스 스크래핑 (url만 가져옴)

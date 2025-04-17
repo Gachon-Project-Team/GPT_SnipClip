@@ -18,7 +18,9 @@ app = FastAPI()
 app.mount("/videos", StaticFiles(directory="temp_storage"), name="videos")
 app.mount("/generated_images",
           StaticFiles(directory="generated_images"), name="generated_images")
-
+# 브라우저에서 /image 의 결과인 실제 이미지 url 을 파일 형태로 변환 후 /video 로 요청할 시 CORS 에러 발생. /image 의 결과는 생성 혹은 다운받은 실제 이미지의 서버 경로를 반환하도록 한다
+# app.mount("/image_files", StaticFiles(directory="image"), name="image_files")
+app.mount("/image", StaticFiles(directory="image"), name="image")
 # 요청 데이터 모델 정의
 
 
@@ -102,7 +104,7 @@ async def generate_image_api(request: ImageRequest):
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Error generating image: {e}")
+            status_code=500, detail=f"Error generating image: {str(e)}")
 
 
 @app.post("/flux")

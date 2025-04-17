@@ -6,6 +6,7 @@ import api_key
 import json
 import requests
 import subprocess
+import shlex
 
 # FLUX.1 이미지 생성 함수 - AI 서버에 접속
 def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
@@ -25,8 +26,9 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
         output_filename = f"{timestamp}_{sanitized_ip}.png"
 
         # 실행할 명령어
+        escaped_prompt = shlex.quote(prompt)
         command = f'source /home/{SSH_USERNAME}/anaconda3/bin/activate {CONDA_ENV_NAME} && '
-        command += f'python3 {GENERATE_SCRIPT} --prompt "{prompt}" --guidance_scale {guidance_scale} '
+        command += f'python3 {GENERATE_SCRIPT} --prompt {escaped_prompt} --guidance_scale {guidance_scale} '
         command += f'--num_inference_steps {num_inference_steps} --width {width} --height {height} '
         command += f'--output {os.path.join(OUTPUT_DIR, output_filename)}'
 

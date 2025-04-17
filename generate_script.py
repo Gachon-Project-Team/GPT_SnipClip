@@ -167,9 +167,12 @@ def generate_script(news, query):
             section = i["sections"][k]+i["sections"][k+1]
             sections.append(section)
         result.append(sections)    
-    ai = execute_image_map(result)
-    for i in range(len(ai)):
-        script[i]["ai"]=ai[i]
 
+
+    # ai = execute_image_map(result)
+    #for i in range(len(ai)):
+    #    script[i]["ai"]=ai[i]
+    for i in range(len(script)):
+        script[i]["ai"] = [0, 0, 0, 0, 0]
     return script
 
