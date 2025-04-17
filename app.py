@@ -12,6 +12,9 @@ import flux
 import json
 import os
 
+from tasks import run_image_generation
+from celery.result import AsyncResult
+
 app = FastAPI()
 
 # 정적 파일 제공 설정
@@ -96,15 +99,34 @@ async def generate_script_api(request: ScriptRequest):
 
 @app.post("/image")
 async def generate_image_api(request: ImageRequest):
-    try:
-        result = generate_image.generate_image(request.script, request.query)
+    # try:
+    #     result = generate_image.generate_image(request.script, request.query)
 
-        save_json_result(result, request.query, "image")
+    #     save_json_result(result, request.query, "image")
 
-        return result
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error generating image: {str(e)}")
+    #     return result
+    # except Exception as e:
+    #     raise HTTPException(
+    #         status_code=500, detail=f"Error generating image: {str(e)}")
+    task = run_image_generation.delay(request.script, request.query)
+    return {"job_id": task.id}
+
+
+@app.get("/status/{job_id}")
+def get_status(job_id: str):
+    result = AsyncResult(job_id)
+    return {"status": result.status}
+
+
+@app.get("/result/{job_id}")
+def get_result(job_id: str):
+    result = AsyncResult(job_id)
+    if result.successful():
+        return {"result": result.get()}
+    elif result.failed():
+        raise HTTPException(status_code=500, detail="Image generation failed")
+    else:
+        return {"message": "Processing..."}
 
 
 @app.post("/flux")
