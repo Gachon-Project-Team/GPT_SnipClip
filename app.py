@@ -6,7 +6,7 @@ from typing import Dict, List
 from utils.save_json import save_json_result
 import generate_scrap
 import generate_script
-import generate_image
+import generate_real_image
 import generate_video
 import flux
 import json
@@ -172,7 +172,7 @@ async def execute_pipeline(request: QueryRequest):
             json.dump(script, json_file, indent=4, ensure_ascii=False)
 
         # Step 3: Generate images
-        result = generate_image.generate_image(script, request.query)
+        result = generate_real_image.generate_image(script, request.query)
         with open("result.json", "w", encoding="utf-8") as json_file:
             json.dump(result, json_file, indent=4, ensure_ascii=False)
 
