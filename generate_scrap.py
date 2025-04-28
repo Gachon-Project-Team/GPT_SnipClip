@@ -3,7 +3,6 @@ import urllib.request
 from newspaper import Article
 import requests
 import api_key
-import ssl
 
 # 뉴스 스크랩 및 분류
 
@@ -15,11 +14,10 @@ def execute_scrap(query):
     data = [] #기사를 저장할 리스트, 딕셔너리 리스트 형태, key = id, title, content, image, url
     
     # naver 기사 api 링크 접속
-    context = ssl._create_unverified_context()
     request = urllib.request.Request(url)
     request.add_header("X-Naver-Client-Id", client_id)
     request.add_header("X-Naver-Client-Secret", client_secret)
-    response = urllib.request.urlopen(request, context=context)
+    response = urllib.request.urlopen(request)
     rescode = response.getcode()
     
     #네이버 뉴스 접속 성공시 뉴스 스크래핑 (url만 가져옴)
@@ -79,11 +77,13 @@ def setup_gpt_request(data, query):
         "role": "user",
         "content": (
             f"The dataset contains 100 news article titles scraped using the query '{query}'. "
-            "Your task is to group these titles into at least three distinct categories with minimal overlap. "
-            "Ensure that each category represents a unique theme suitable for a short-form video. "
-            "If two or more groups share highly similar topics, merge them into one category. "
-            f"Exclude any titles that are irrelevant or only tangentially related to the {query} "
-            "Return your answer strictly in JSON format with the following structure: {\"category_name1\": [news_id, ...], \"category_name2\": [news_id, ...]}"
+            "Your task is to create a single comprehensive script that summarizes the core information from all these articles. "
+            "This summary should be coherent, concise, and capture the most important facts, developments, and perspectives on this topic. "
+            "The script should be suitable for a short-form video (60-90 seconds when read aloud). "
+            "Structure your response with a compelling headline, an attention-grabbing introduction, 3-5 key points from across the articles, and a brief conclusion. "
+            "Use clear, engaging language appropriate for an informative news summary. "
+            f"Exclude any information that appears to be irrelevant or only tangentially related to '{query}'. "
+            "Return your answer strictly in JSON format with the following structure: {\"category_name1\": [news_id, ...]}"
             f"Here is the data: {filtered_data_json}"
         )
     }
