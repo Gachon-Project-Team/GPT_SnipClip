@@ -12,7 +12,7 @@ import flux
 import json
 import os
 
-from tasks import run_image_generation
+from tasks import run_real_image_matching, run_ai_image_generation
 from celery.result import AsyncResult
 from celery_worker import celery_app
 
@@ -98,8 +98,8 @@ async def generate_script_api(request: ScriptRequest):
             status_code=500, detail=f"Error generating script: {e}")
 
 
-@app.post("/image")
-async def generate_image_api(request: ImageRequest):
+@app.post("/image_real")
+async def real_image_matching_api(request: ImageRequest):
     # try:
     #     result = generate_image.generate_image(request.script, request.query)
 
@@ -109,7 +109,13 @@ async def generate_image_api(request: ImageRequest):
     # except Exception as e:
     #     raise HTTPException(
     #         status_code=500, detail=f"Error generating image: {str(e)}")
-    task = run_image_generation.delay(request.script, request.query)
+    task = run_real_image_matching.delay(request.script, request.query)
+    return {"job_id": task.id}
+
+
+@app.post("/image_ai")
+async def generate_ai_image_api(request: ImageRequest):
+    task = run_ai_image_generation.delay(request.script, request.query)
     return {"job_id": task.id}
 
 
