@@ -1,4 +1,4 @@
-from celery_worker import celery_app
+from celery_app import celery_app
 from generate_real_image import generate_real_image
 from utils.save_json import save_json_result
 from generate_video import process_files
