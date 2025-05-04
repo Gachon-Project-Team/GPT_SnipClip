@@ -14,6 +14,7 @@ import os
 
 from tasks import run_image_generation
 from celery.result import AsyncResult
+from celery_worker import celery_app
 
 app = FastAPI()
 
@@ -114,13 +115,13 @@ async def generate_image_api(request: ImageRequest):
 
 @app.get("/status/{job_id}")
 def get_status(job_id: str):
-    result = AsyncResult(job_id)
+    result = AsyncResult(job_id, app=celery_app)
     return {"status": result.status}
 
 
 @app.get("/result/{job_id}")
 def get_result(job_id: str):
-    result = AsyncResult(job_id)
+    result = AsyncResult(job_id, app=celery_app)
     if result.successful():
         return {"result": result.get()}
     elif result.failed():
