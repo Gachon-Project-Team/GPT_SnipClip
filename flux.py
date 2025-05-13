@@ -10,6 +10,8 @@ import shlex
 
 # FLUX.1 이미지 생성 함수 - AI 서버에 접속
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 
 def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
     try:
