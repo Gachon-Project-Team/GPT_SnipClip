@@ -520,8 +520,10 @@ def generate_real_image(script_data, query):
                     used_indices.append(best_idx)
                     
                     # 원본 URL을 결과에 저장
-                    original_url = path_to_original_url.get(best_path, "")
-                    matched_images.append(original_url)
+                    # original_url = path_to_original_url.get(best_path, "")
+                    filename = os.path.basename(best_path)
+                    matched_url = f"/image/{filename}"
+                    matched_images.append(matched_url)
                     
                     logging.info(f"  - GPT 매칭 성공: 인덱스 {best_idx}, 캡션: '{image_captions[best_idx]}'")
                     logging.info(f"  - GPT 매칭 소요 시간: {gpt_elapsed_time:.2f}초")
@@ -540,8 +542,10 @@ def generate_real_image(script_data, query):
                         used_indices.append(fallback_idx)
                         
                         # 원본 URL을 결과에 저장
-                        original_url = path_to_original_url.get(fallback_path, "")
-                        matched_images.append(original_url)
+                        # original_url = path_to_original_url.get(fallback_path, "")
+                        filename = os.path.basename(best_path)
+                        matched_url = f"/image/{filename}"
+                        matched_images.append(matched_url)
                         
                         logging.info(f"  - Fallback 매칭: 인덱스 {fallback_idx}, 캡션: '{image_captions[fallback_idx]}'")
                         total_fallbacks += 1
