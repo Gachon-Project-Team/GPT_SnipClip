@@ -3,7 +3,7 @@ import torch
 import gc
 import time
 import logging
-from flux import generate_prompt, execute_flux
+from flux import generate_prompt, execute_flux, request_flux_http
 from generate_script import generate_script
 
 # 로깅 설정
@@ -110,7 +110,8 @@ def generate_ai_image(script_data, query):
 
             # AI 이미지 생성 시간 측정
             image_start_time = time.time()
-            ai_url = execute_flux(prompt)
+            # ai_url = execute_flux(prompt)
+            ai_url = request_flux_http(prompt=prompt)
             image_generation_time = time.time() - image_start_time
             total_image_generation_time += image_generation_time
 

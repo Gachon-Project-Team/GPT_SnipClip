@@ -98,6 +98,38 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
 # 4모델 쓸 때 반환 결과 추가 처리에 사용
 
 
+def request_flux_http(prompt, width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
+    try:
+        host = api_key.get_SSH_HOST()
+        # port = api_key.get_SSH_PORT()
+        port = 7760
+        url = f"{host}:{port}/generate"
+
+        payload = {
+            "prompt": prompt,
+            "guidance_scale": guidance_scale,
+            "num_inference_steps": num_inference_steps,
+            "width": width,
+            "height": height
+        }
+
+        response = requests.post(url, json=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            image_url = data.get("url")  # FastAPI 응답 JSON에서 "url" 키를 반환한다고 가정
+            print(f"FLUX HTTP 요청 성공: {image_url}")
+            return image_url
+        else:
+            print(
+                f"[FLUX HTTP] 요청 실패 - 상태 코드: {response.status_code}, 응답: {response.text}")
+            return None
+
+    except Exception as e:
+        print(f"[FLUX HTTP] 예외 발생: {e}")
+        return None
+
+
 def clean_gpt_response(raw_content):
     raw_content = raw_content.strip()
     if raw_content.startswith("```json"):
