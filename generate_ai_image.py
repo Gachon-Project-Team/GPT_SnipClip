@@ -7,8 +7,9 @@ from flux import generate_prompt, execute_flux, request_flux_http
 from generate_script import generate_script
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def create_section_groups(sections, num_groups=5):
@@ -57,8 +58,11 @@ def generate_ai_image(script_data, query):
         script_data = script_data[0]
 
     # 스크립트 통계
-    total_sections = sum(len(create_section_groups(item.get("section", [])))
-                         for item in script_data if isinstance(item, dict))
+    total_sections = sum(
+        len(create_section_groups(item.get("section", [])))
+        for item in script_data
+        if isinstance(item, dict)
+    )
     logging.info(f"총 {total_sections}개 섹션에 대한 AI 이미지 생성 예정")
 
     results = []
@@ -110,8 +114,8 @@ def generate_ai_image(script_data, query):
 
             # AI 이미지 생성 시간 측정
             image_start_time = time.time()
-            # ai_url = execute_flux(prompt)
-            ai_url = request_flux_http(prompt=prompt)
+            ai_url = execute_flux(prompt)
+            # ai_url = request_flux_http(prompt=prompt)
             image_generation_time = time.time() - image_start_time
             total_image_generation_time += image_generation_time
 
@@ -119,10 +123,13 @@ def generate_ai_image(script_data, query):
                 matched_images.append(ai_url)  # AI URL만 저장
                 total_ai_images += 1
                 category_ai_images += 1
-                logging.info(f"  - 이미지 생성 성공: {image_generation_time:.2f}초 소요")
+                logging.info(
+                    f"  - 이미지 생성 성공: {image_generation_time:.2f}초 소요"
+                )
             else:
                 logging.warning(
-                    f"  - 이미지 생성 실패: {image_generation_time:.2f}초 소요")
+                    f"  - 이미지 생성 실패: {image_generation_time:.2f}초 소요"
+                )
 
             # 메모리 정리
             memory_cleanup_start = time.time()
@@ -136,13 +143,14 @@ def generate_ai_image(script_data, query):
 
         category_elapsed_time = time.time() - category_start_time
         logging.info(
-            f"카테고리 '{category}' 처리 완료: {len(matched_images)}개 이미지 생성 ({category_elapsed_time:.2f}초 소요)")
+            f"카테고리 '{category}' 처리 완료: {len(matched_images)}개 이미지 생성 ({category_elapsed_time:.2f}초 소요)"
+        )
 
         result_item = {
             "category": category,
             "title": title,
             "section": sections,
-            "image": matched_images
+            "image": matched_images,
         }
         results.append(result_item)
 
@@ -158,17 +166,22 @@ def generate_ai_image(script_data, query):
     # logging.info(
     #     f"- 스크립트 생성: {script_elapsed_time:.2f}초 ({script_elapsed_time/total_elapsed_time*100:.1f}%)")
     logging.info(
-        f"- 프롬프트 생성: {total_prompt_generation_time:.2f}초 ({total_prompt_generation_time/total_elapsed_time*100:.1f}%)")
+        f"- 프롬프트 생성: {total_prompt_generation_time:.2f}초 ({total_prompt_generation_time/total_elapsed_time*100:.1f}%)"
+    )
     logging.info(
-        f"- 이미지 생성: {total_image_generation_time:.2f}초 ({total_image_generation_time/total_elapsed_time*100:.1f}%)")
+        f"- 이미지 생성: {total_image_generation_time:.2f}초 ({total_image_generation_time/total_elapsed_time*100:.1f}%)"
+    )
     logging.info(
-        f"- 결과 저장: {save_elapsed_time:.2f}초 ({save_elapsed_time/total_elapsed_time*100:.1f}%)")
+        f"- 결과 저장: {save_elapsed_time:.2f}초 ({save_elapsed_time/total_elapsed_time*100:.1f}%)"
+    )
 
     logging.info(f"이미지 생성 결과:")
     logging.info(f"- 총 섹션: {actual_total_sections}개")
     logging.info(
-        f"- AI 이미지: {total_ai_images}개 ({100*total_ai_images/max(1, actual_total_sections):.1f}%)")
+        f"- AI 이미지: {total_ai_images}개 ({100*total_ai_images/max(1, actual_total_sections):.1f}%)"
+    )
     logging.info(
-        f"- 평균 이미지 생성 시간: {total_image_generation_time/max(1, total_ai_images):.2f}초/이미지")
+        f"- 평균 이미지 생성 시간: {total_image_generation_time/max(1, total_ai_images):.2f}초/이미지"
+    )
 
     return results
