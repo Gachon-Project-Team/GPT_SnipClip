@@ -98,12 +98,12 @@ def execute_flux(prompt, client_ip='127.0.0.1', width=1280, height=720, guidance
 # 4모델 쓸 때 반환 결과 추가 처리에 사용
 
 
-def request_flux_http(prompt, width=1280, height=720, guidance_scale=0.5, num_inference_steps=100):
+def request_flux_http(prompt, width=640, height=360, guidance_scale=0.5, num_inference_steps=20):
     try:
         host = api_key.get_SSH_HOST()
         # port = api_key.get_SSH_PORT()
         port = 7760
-        url = f"{host}:{port}/generate"
+        url = f"http://{host}:{port}/generate"
 
         payload = {
             "prompt": prompt,
