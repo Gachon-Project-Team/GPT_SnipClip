@@ -145,32 +145,41 @@ const KeywordInput = () => {
     try {
       const res = await axios.post("/video", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        timeout: 900000
       });
-      const jobId = res.data.job_id;
 
-      startTimeRef.current = Date.now();
-      timerRef.current = setInterval(async () => {
-        const now = Date.now();
-        const elapsed = Math.floor((now - startTimeRef.current) / 1000);
-        setProgressText(`비디오 생성 중... (${elapsed}초 경과)`);
+      // const jobId = res.data.job_id;
 
-        const statusRes = await axios.get(`/status/${jobId}`);
-        if (statusRes.data.status === "SUCCESS") {
-          clearInterval(timerRef.current);
-          const resultRes = await axios.get(`/result/${jobId}`);
-          setVideoUrl(resultRes.data.video_url);
-          setProgress(100);
-          setProgressText("완료되었습니다. 다운로드 가능!");
-          setIsDownloadable(true);
-          setIsProcessing(false);
-          setButtonLoading(false);
-        } else if (statusRes.data.status === "FAILURE") {
-          clearInterval(timerRef.current);
-          setProgressText("비디오 생성 실패");
-          setIsProcessing(false);
-          setButtonLoading(false);
-        }
-      }, 5000);
+      // startTimeRef.current = Date.now();
+      // timerRef.current = setInterval(async () => {
+      //   const now = Date.now();
+      //   const elapsed = Math.floor((now - startTimeRef.current) / 1000);
+      //   setProgressText(`비디오 생성 중... (${elapsed}초 경과)`);
+
+      //   const statusRes = await axios.get(`/status/${jobId}`);
+      //   if (statusRes.data.status === "SUCCESS") {
+      //     clearInterval(timerRef.current);
+      //     const resultRes = await axios.get(`/result/${jobId}`);
+      //     setVideoUrl(resultRes.data.video_url);
+      //     setProgress(100);
+      //     setProgressText("완료되었습니다. 다운로드 가능!");
+      //     setIsDownloadable(true);
+      //     setIsProcessing(false);
+      //     setButtonLoading(false);
+      //   } else if (statusRes.data.status === "FAILURE") {
+      //     clearInterval(timerRef.current);
+      //     setProgressText("비디오 생성 실패");
+      //     setIsProcessing(false);
+      //     setButtonLoading(false);
+      //   }
+      // }, 5000);
+      setVideoUrl(res.data.video_url);
+      setProgress(100);
+      setProgressText("완료되었습니다. 다운로드 가능!");
+      setIsDownloadable(true);
+      setIsProcessing(false);
+      setButtonLoading(false);
+
     } catch (err) {
       console.error(err);
       setProgressText("비디오 생성 실패");
@@ -212,7 +221,7 @@ const KeywordInput = () => {
         </>
       )}
 
-      {isDownloadable && videoUrl && (  
+      {isDownloadable && videoUrl && (
         <DownloadButton onClick={handleDownload}>다운로드</DownloadButton>
       )}
 
